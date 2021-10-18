@@ -5,6 +5,7 @@ public class Ocean {
     private final int verticalSize;
     private final int horizontalSize;
     private final StringBuilder builder;
+    private int beforeFieldLength;
 
     public Ocean(int verticalSize, int horizontalSize) {
         this.verticalSize = verticalSize;
@@ -20,26 +21,29 @@ public class Ocean {
     }
 
     private void createOcean() {
-        builder.append("    ");
+        builder.append("     ");
         for (int i = 0; i < horizontalSize; ++i) {
             builder.append(' ').append((char) ('a' + i));
         }
 
         builder.append('\n');
-        builder.append("  ┌");
+        builder.append("   ┌");
         builder.append("——".repeat(horizontalSize));
         builder.append("———┐");
         builder.append('\n');
 
+        beforeFieldLength = builder.length();
+
         for (int i = 0; i < verticalSize; ++i) {
-            builder.append(i + 1).append(" │ ");
-            builder.append(" ◎".repeat(horizontalSize));
+            builder.append(String.format("%2s", i + 1)).append(" │ ");
+            builder.append(" ◦".repeat(horizontalSize));
             builder.append("  │");
             builder.append('\n');
         }
-
-        builder.append("  └");
+        builder.append("   └");
         builder.append("——".repeat(horizontalSize));
         builder.append("———┘");
+        builder.append('\n');
+        builder.setCharAt(300 - 1, '●');
     }
 }
