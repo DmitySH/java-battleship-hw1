@@ -6,11 +6,17 @@ import battleship.utilities.InputHelper;
 public final class BattleshipGame {
     public static final InputHelper inputHelper = InputHelper.getInstance();
 
+    private Fleet fleet;
+    private Ocean ocean;
+
     public static void main(String[] args) {
         BattleshipGame gameSession = new BattleshipGame();
-        Fleet fleet = null;
-        Ocean ocean = null;
 
+        gameSession.initializeGame(args);
+        gameSession.playGame();
+    }
+
+    public void initializeGame(String[] args) {
         try {
             int horizontalSize;
             int verticalSize;
@@ -26,7 +32,7 @@ public final class BattleshipGame {
             } else {
                 horizontalSize = inputHelper.parseIntFromString(args[0], 1, 26);
                 verticalSize = inputHelper.parseIntFromString(args[1], 1, 26);
-                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 14.0));
+                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 16.0));
 
                 fleet = Fleet.fromArgsCreateFleet(shipCells, args);
             }
@@ -35,17 +41,17 @@ public final class BattleshipGame {
             System.out.println(ex.getMessage() + " Restart game!");
             System.exit(1);
         }
-
-        gameSession.playGame(ocean, fleet);
     }
 
-    public void playGame(Ocean ocean, Fleet fleet) {
+    public void playGame() {
         System.out.println("Game started!");
         System.out.println(fleet);
 
         fleet.setOcean(ocean);
 
         ocean.print();
+
+        System.out.println(" ✛ ✖ ⨷");
     }
 
     public static void printInput(int shipCells) {
