@@ -6,9 +6,10 @@ import java.util.ArrayList;
 
 import static battleship.BattleshipGame.inputHelper;
 
-public class Fleet {
+public final class Fleet {
     public final ArrayList<Ship> ships;
 
+    private Ocean ocean;
     private int submarines;
     private int destroyers;
     private int cruisers;
@@ -36,6 +37,16 @@ public class Fleet {
         }
     }
 
+    public void setOcean(Ocean ocean) {
+        if (this.ocean == null) {
+            this.ocean = ocean;
+        }
+    }
+
+    public Ocean getOcean() {
+        return ocean;
+    }
+
     private void initializeShipTypes(int submarines, int destroyers,
                                      int cruisers, int battleships, int carriers) {
         this.submarines = submarines;
@@ -46,7 +57,6 @@ public class Fleet {
     }
 
     @Override
-
     public String toString() {
         return String.format("%s\n%s %d\n%s %d\n%s %d\n%s %d\n%s %d",
                 "Current fleet:",

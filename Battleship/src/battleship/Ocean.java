@@ -1,7 +1,7 @@
 package battleship;
 
 
-public class Ocean {
+public final class Ocean {
     private final int verticalSize;
     private final int horizontalSize;
     private final StringBuilder builder;

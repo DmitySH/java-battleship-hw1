@@ -3,7 +3,7 @@ package battleship;
 import battleship.utilities.InputHelper;
 
 
-public class BattleshipGame {
+public final class BattleshipGame {
     public static final InputHelper inputHelper = InputHelper.getInstance();
 
     public static void main(String[] args) {
@@ -42,6 +42,8 @@ public class BattleshipGame {
     public void playGame(Ocean ocean, Fleet fleet) {
         System.out.println("Game started!");
         System.out.println(fleet);
+
+        fleet.setOcean(ocean);
 
         ocean.print();
     }
