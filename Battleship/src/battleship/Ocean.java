@@ -44,6 +44,6 @@ public class Ocean {
         builder.append("——".repeat(horizontalSize));
         builder.append("———┘");
         builder.append('\n');
-        builder.setCharAt(300 - 1, '●');
+//        builder.setCharAt(300 - 1, '●');
     }
 }
