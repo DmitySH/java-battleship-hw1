@@ -1,4 +1,12 @@
 package battleship.ships;
 
-public class Cruiser extends Ship {
+public final class Cruiser extends Ship {
+    public Cruiser() {
+        size = 3;
+    }
+
+    @Override
+    public void setInOcean() {
+
+    }
 }
