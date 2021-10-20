@@ -5,8 +5,4 @@ public final class Battleship extends Ship {
         size = 4;
     }
 
-    @Override
-    public void setInOcean() {
-
-    }
 }

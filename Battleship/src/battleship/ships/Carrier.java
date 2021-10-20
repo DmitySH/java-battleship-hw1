@@ -5,8 +5,4 @@ public final class Carrier extends Ship {
         size = 5;
     }
 
-    @Override
-    public void setInOcean() {
-
-    }
 }

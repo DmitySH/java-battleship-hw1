@@ -1,5 +1,6 @@
 package battleship;
 
+import battleship.ships.PlacementException;
 import battleship.utilities.InputHelper;
 
 
@@ -10,13 +11,29 @@ public final class BattleshipGame {
     private Ocean ocean;
 
     public static void main(String[] args) {
-        BattleshipGame gameSession = new BattleshipGame();
+        BattleshipGame gameSession;
+        boolean endGame = false;
+        while (!endGame) {
+            try {
+                gameSession = new BattleshipGame();
 
-        gameSession.initializeGame(args);
-        gameSession.playGame();
+
+                gameSession.initializeGame(args);
+                gameSession.playGame();
+                endGame = true;
+            } catch (PlacementException ignored) {
+                System.out.println("Can not generate game with such parameters.\n" +
+                        "Enter exit to close the game or any other word to play again");
+                String choice = inputHelper.getLine();
+
+                if(choice.equals("exit")){
+                    endGame = true;
+                }
+            }
+        }
     }
 
-    public void initializeGame(String[] args) {
+    public void initializeGame(String[] args) throws PlacementException {
         try {
             int horizontalSize;
             int verticalSize;

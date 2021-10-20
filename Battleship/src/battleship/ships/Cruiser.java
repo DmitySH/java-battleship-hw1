@@ -5,8 +5,4 @@ public final class Cruiser extends Ship {
         size = 3;
     }
 
-    @Override
-    public void setInOcean() {
-
-    }
 }

@@ -8,15 +8,17 @@ public class OceanCell {
     private Ship ship;
 
     public OceanCell() {
-
+        isBlocked = false;
+        isFired = false;
+        ship = null;
     }
 
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
+    public void makeBlocked() {
+        isBlocked = true;
     }
 
-    public void setFired(boolean fired) {
-        isFired = fired;
+    public void makeFired() {
+        isFired = true;
     }
 
     public boolean isBlocked() {
@@ -25,6 +27,14 @@ public class OceanCell {
 
     public boolean isFired() {
         return isFired;
+    }
+
+    public Ship getShip() {
+        return ship;
+    }
+
+    public void setShip(Ship ship) {
+        this.ship = ship;
     }
 
     public boolean hasShip() {

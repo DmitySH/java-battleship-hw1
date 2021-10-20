@@ -69,4 +69,8 @@ public final class InputHelper {
 
         return res;
     }
+
+    public String getLine() {
+        return in.nextLine();
+    }
 }

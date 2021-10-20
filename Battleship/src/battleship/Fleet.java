@@ -16,39 +16,55 @@ public final class Fleet {
     private int battleships;
     private int carriers;
 
-    public Fleet(int submarines, int destroyers, int cruisers, int battleships, int carriers, Ocean ocean) {
+    public Fleet(int submarines, int destroyers, int cruisers, int battleships, int carriers, Ocean ocean) throws PlacementException {
         this.ocean = ocean;
         ships = new ArrayList<>();
-        initializeShipTypes(submarines, destroyers, cruisers, battleships, carriers);
 
-        for (int i = 0; i < submarines; ++i) {
-            ships.add(new Submarine());
-        }
-        for (int i = 0; i < destroyers; ++i) {
-            ships.add(new Destroyer());
-        }
-        for (int i = 0; i < cruisers; ++i) {
-            ships.add(new Cruiser());
-        }
-        for (int i = 0; i < battleships; ++i) {
-            ships.add(new Battleship());
-        }
-        for (int i = 0; i < carriers; ++i) {
-            ships.add(new Carrier());
-        }
+        this.submarines = submarines;
+        this.destroyers = destroyers;
+        this.cruisers = cruisers;
+        this.battleships = battleships;
+        this.carriers = carriers;
+
+        initializeFleet(submarines, destroyers, cruisers, battleships, carriers);
     }
 
     public Ocean getOcean() {
         return ocean;
     }
 
-    private void initializeShipTypes(int submarines, int destroyers,
-                                     int cruisers, int battleships, int carriers) {
-        this.submarines = submarines;
-        this.destroyers = destroyers;
-        this.cruisers = cruisers;
-        this.battleships = battleships;
-        this.carriers = carriers;
+    private void initializeFleet(int submarines, int destroyers,
+                                 int cruisers, int battleships, int carriers) throws PlacementException {
+        int currentSize = 5;
+        while (submarines > 0 || destroyers > 0 || cruisers > 0 || battleships > 0 || carriers > 0) {
+            Ship newShip = null;
+            if (carriers > 0 && currentSize == 5) {
+                newShip = new Carrier();
+                --carriers;
+            } else if (battleships > 0 && currentSize == 4) {
+                newShip = new Battleship();
+                --battleships;
+            } else if (cruisers > 0 && currentSize == 3) {
+                newShip = new Cruiser();
+                --cruisers;
+            } else if (destroyers > 0 && currentSize == 2) {
+                newShip = new Destroyer();
+                --destroyers;
+            } else if (submarines > 0 && currentSize == 1) {
+                newShip = new Submarine();
+                --submarines;
+            }
+
+            if (newShip != null) {
+                newShip.placeInOcean(ocean);
+                ships.add(newShip);
+            }
+
+            --currentSize;
+            if (currentSize == 0) {
+                currentSize = 5;
+            }
+        }
     }
 
     @Override
@@ -62,7 +78,7 @@ public final class Fleet {
                 "●\tSubmarines:", submarines);
     }
 
-    public static Fleet consoleCreateFleet(int shipCells, Ocean ocean) {
+    public static Fleet consoleCreateFleet(int shipCells, Ocean ocean) throws PlacementException {
         int carriers = inputHelper.parseInt(0, shipCells / 5,
                 String.format("Input number of Carriers (%d cells left, one = 5 cells): ", shipCells),
                 "Incorrect! Try again: ", 5);
@@ -90,7 +106,7 @@ public final class Fleet {
         return new Fleet(submarines, destroyers, cruisers, battleships, carriers, ocean);
     }
 
-    public static Fleet fromArgsCreateFleet(int shipCells, String[] args, Ocean ocean) {
+    public static Fleet fromArgsCreateFleet(int shipCells, String[] args, Ocean ocean) throws PlacementException {
         int carriers = inputHelper.parseIntFromString(args[2], 0, shipCells / 5);
         shipCells -= carriers * 5;
 

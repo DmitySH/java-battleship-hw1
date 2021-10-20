@@ -5,8 +5,4 @@ public final class Submarine extends Ship {
         size = 1;
     }
 
-    @Override
-    public void setInOcean() {
-
-    }
 }
