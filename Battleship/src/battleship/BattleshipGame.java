@@ -9,6 +9,7 @@ public final class BattleshipGame {
 
     private Fleet fleet;
     private Ocean ocean;
+    private int totalShots;
 
     public static void main(String[] args) {
         BattleshipGame gameSession;
@@ -35,6 +36,7 @@ public final class BattleshipGame {
 
     public void initializeGame(String[] args) throws PlacementException {
         try {
+            totalShots = 0;
             int horizontalSize;
             int verticalSize;
             if (args.length != 7) {
@@ -65,8 +67,18 @@ public final class BattleshipGame {
         System.out.println("Game started!");
         System.out.println(fleet);
 
-
         System.out.println(fleet.getOcean());
+        System.out.println(ocean.openedOcean());
+
+        while (fleet.getShipsNumber() > 0) {
+            int[] coordinates = inputHelper.enterCell(0, ocean.getVerticalSize(),
+                    0, ocean.getHorizontalSize(),
+                    "Enter pair <letter> <number>: ",
+                    "Incorrect! Try again: ", 5);
+
+            System.out.println(ocean.shot(coordinates[0], coordinates[1]));
+
+        }
 
     }
 

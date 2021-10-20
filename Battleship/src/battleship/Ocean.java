@@ -6,9 +6,9 @@ import battleship.ships.Ship;
 public final class Ocean {
     private final int verticalSize;
     private final int horizontalSize;
-    private final StringBuilder builder;
-
     private final OceanCell[][] field;
+    private final OceanView oceanView;
+
 
     public Ocean(int verticalSize, int horizontalSize) {
         this.verticalSize = verticalSize;
@@ -21,13 +21,13 @@ public final class Ocean {
             }
         }
 
-        builder = new StringBuilder();
-        createOcean();
+        oceanView = new OceanView(this);
+        oceanView.createPlayingView();
     }
 
     @Override
     public String toString() {
-        return builder.toString();
+        return oceanView.toString();
     }
 
     public int getVerticalSize() {
@@ -38,32 +38,15 @@ public final class Ocean {
         return horizontalSize;
     }
 
-    private void createOcean() {
-        builder.append("     ");
-        for (int i = 0; i < horizontalSize; ++i) {
-            builder.append(' ').append((char) ('a' + i));
-        }
+    public OceanCell[][] getField() {
+        return field;
+    }
 
-        builder.append('\n');
-        builder.append("   ┌");
-        builder.append("——".repeat(horizontalSize));
-        builder.append("———┐");
-        builder.append('\n');
+    public String openedOcean() {
+        OceanView openedOcean = new OceanView(this);
+        openedOcean.createOpenedView();
 
-
-        for (int i = 0; i < verticalSize; ++i) {
-            builder.append(String.format("%2s", i + 1)).append(" │ ");
-            builder.append(" ◦".repeat(horizontalSize));
-            builder.append("  │");
-            builder.append('\n');
-        }
-        builder.append("   └");
-        builder.append("——".repeat(horizontalSize));
-        builder.append("———┘");
-        builder.append('\n');
-        builder.setCharAt(100, '♰');
-        builder.setCharAt(100 + 2, '×');
-        builder.setCharAt(100 - 2, '⊙');
+        return openedOcean.toString();
     }
 
     public boolean isFree(int x1, int x2, int y1, int y2) {
@@ -97,6 +80,40 @@ public final class Ocean {
                     && currentY >= 0 && currentY < getVerticalSize()) {
                 field[currentX][currentY].makeBlocked();
             }
+        }
+    }
+
+    private void fireAroundCell(int x, int y) {
+        for (int i = 0; i < 9; ++i) {
+            int currentX = x - 1 + i % 3;
+            int currentY = y - 1 + i / 3;
+
+            if (currentX >= 0 && currentX < getHorizontalSize()
+                    && currentY >= 0 && currentY < getVerticalSize()
+                    && !field[currentX][currentY].hasShip()) {
+                field[currentX][currentY].makeFired();
+            }
+        }
+    }
+
+    public String shot(int x, int y) {
+        OceanCell cell = field[x][y];
+        if (cell.isFired()) {
+            return String.format("%s%c, %d%s\n", "Cell (", (x + 'a'), y + 1, ") already was fired");
+        }
+
+        cell.makeFired();
+        if(cell.hasShip()) {
+            cell.getShip().decreaseHealth();
+
+            if(cell.getShip().getHealth() == 0){
+                return cell.getShip().sunk();
+            }
+
+            return String.format("%s%c, %d%s\n", "You hit ship at (", x + 'a', y + 1, ")");
+
+        } else {
+            return String.format("%s%c, %d%s\n", "You missed at (", x + 'a', y + 1, ")");
         }
     }
 }

@@ -40,6 +40,42 @@ public final class InputHelper {
         return res;
     }
 
+    public int[] enterCell(int from1, int to1, int from2, int to2,
+                           String prompt, String errorMessage, int attempts) {
+        out.print(prompt);
+        String[] input;
+
+        int current_attempt = 0;
+        int[] res = new int[2];
+        boolean isCorrect = false;
+
+        while (!isCorrect) {
+            if (current_attempt >= attempts) {
+                throw new NumberFormatException("You did not enter correct pair!");
+            }
+
+            try {
+                input = in.nextLine().split(" ");
+                if (input.length != 2){
+                    throw new NumberFormatException("You did not enter correct pair!");
+                }
+                res[1] = Integer.parseInt(input[1]) - 1;
+                res[0] = input[0].charAt(0) - 'a';
+                if (res[1] >= from2 && res[1] <= to2 && input[0].length() == 1
+                        && res[0] >= from1 && res[0] <= to1) {
+                    isCorrect = true;
+                } else {
+                    out.print(errorMessage);
+                }
+            } catch (NumberFormatException ex) {
+                out.print(errorMessage);
+            }
+            ++current_attempt;
+        }
+
+        return res;
+    }
+
     public int parseInt(int from, int to, String prompt, String errorMessage, int attempts) {
         out.print(prompt);
         String input;

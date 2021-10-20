@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import static battleship.BattleshipGame.inputHelper;
 
 public final class Fleet {
-    public final ArrayList<Ship> ships;
+    private final ArrayList<Ship> ships;
 
     private final Ocean ocean;
     private int submarines;
@@ -29,8 +29,36 @@ public final class Fleet {
         initializeFleet(submarines, destroyers, cruisers, battleships, carriers);
     }
 
+    public ArrayList<Ship> getShips() {
+        return ships;
+    }
+
+    public void decreaseSubmarines() {
+        --this.submarines;
+    }
+
+    public void decreaseDestroyers() {
+        --this.destroyers;
+    }
+
+    public void decreaseCruisers(){
+        --this.cruisers;
+    }
+
+    public void decreaseBattleships() {
+        --this.battleships;
+    }
+
+    public void decreaseCarriers() {
+        --this.carriers;
+    }
+
     public Ocean getOcean() {
         return ocean;
+    }
+
+    public int getShipsNumber() {
+        return submarines + cruisers + destroyers + battleships + carriers;
     }
 
     private void initializeFleet(int submarines, int destroyers,
@@ -39,19 +67,19 @@ public final class Fleet {
         while (submarines > 0 || destroyers > 0 || cruisers > 0 || battleships > 0 || carriers > 0) {
             Ship newShip = null;
             if (carriers > 0 && currentSize == 5) {
-                newShip = new Carrier();
+                newShip = new Carrier(this);
                 --carriers;
             } else if (battleships > 0 && currentSize == 4) {
-                newShip = new Battleship();
+                newShip = new Battleship(this);
                 --battleships;
             } else if (cruisers > 0 && currentSize == 3) {
-                newShip = new Cruiser();
+                newShip = new Cruiser(this);
                 --cruisers;
             } else if (destroyers > 0 && currentSize == 2) {
-                newShip = new Destroyer();
+                newShip = new Destroyer(this);
                 --destroyers;
             } else if (submarines > 0 && currentSize == 1) {
-                newShip = new Submarine();
+                newShip = new Submarine(this);
                 --submarines;
             }
 
