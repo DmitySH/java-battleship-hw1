@@ -5,7 +5,10 @@ public final class Ocean {
     private final int verticalSize;
     private final int horizontalSize;
     private final StringBuilder builder;
-    private int beforeFieldLength;
+
+    private OceanCell[][] field;
+
+
 
     public Ocean(int verticalSize, int horizontalSize) {
         this.verticalSize = verticalSize;
@@ -14,10 +17,9 @@ public final class Ocean {
         createOcean();
     }
 
-
-    public void print() {
-        System.out.println();
-        System.out.println(builder);
+    @Override
+    public String toString() {
+        return builder.toString();
     }
 
     private void createOcean() {
@@ -32,7 +34,6 @@ public final class Ocean {
         builder.append("———┐");
         builder.append('\n');
 
-        beforeFieldLength = builder.length();
 
         for (int i = 0; i < verticalSize; ++i) {
             builder.append(String.format("%2s", i + 1)).append(" │ ");
@@ -44,6 +45,8 @@ public final class Ocean {
         builder.append("——".repeat(horizontalSize));
         builder.append("———┘");
         builder.append('\n');
-//        builder.setCharAt(300 - 1, '●');
+        builder.setCharAt(100, '♰');
+        builder.setCharAt(100 + 2, '×');
+        builder.setCharAt(100 - 2, '⊙');
     }
 }
