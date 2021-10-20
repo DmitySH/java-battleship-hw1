@@ -1,35 +1,40 @@
 package battleship.ships;
 
 
+import battleship.Fleet;
 import battleship.Ocean;
 
 import java.util.Random;
 
 public abstract class Ship {
-    public enum State {
-        UNHARMED,
-        INJURED,
-        SUNK
-    }
-
     private static final Random rnd = new Random();
 
+    protected Fleet fleet;
+    protected int health;
     protected int size;
-    protected State condition;
     protected int begin;
     protected int end;
     protected boolean isHorizontal;
 
-    public Ship() {
-        this.condition = State.UNHARMED;
+    protected Ship(int health, Fleet fleet) {
+        this.health = health;
+        this.fleet = fleet;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void decreaseHealth(){
+        --health;
     }
 
     public int getSize() {
         return size;
-    }
-
-    public State getCondition() {
-        return condition;
     }
 
     public int getBegin() {
@@ -84,4 +89,6 @@ public abstract class Ship {
             throw new PlacementException("Too much attempts to place ship");
         }
     }
+
+    public abstract String sunk();
 }
