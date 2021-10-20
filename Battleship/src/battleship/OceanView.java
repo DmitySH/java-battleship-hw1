@@ -1,8 +1,12 @@
 package battleship;
 
+import battleship.ships.Ship;
+
 public class OceanView {
     private StringBuilder view;
     private final Ocean ocean;
+    private int lengthOfLine;
+    private int beforeFieldLength;
 
     public OceanView(Ocean ocean) {
         this.ocean = ocean;
@@ -12,14 +16,22 @@ public class OceanView {
         this.view = new StringBuilder();
         createUpperBound();
 
+        beforeFieldLength = view.length();
+
         for (int i = 0; i < ocean.getVerticalSize(); ++i) {
             view.append(String.format("%2s", i + 1)).append(" │ ");
             view.append(" ◦".repeat(ocean.getHorizontalSize()));
             view.append("  │");
             view.append('\n');
         }
+        lengthOfLine = (view.length() - beforeFieldLength) / ocean.getVerticalSize();
 
+        System.out.println(lengthOfLine);
         createLowerBound();
+    }
+
+    public void fireAtCell(int x, int y, char typeOfShot) {
+        view.setCharAt(beforeFieldLength + lengthOfLine * y + 4 + (x + 1) * 2, typeOfShot);
     }
 
     public void createOpenedView() {
@@ -31,8 +43,7 @@ public class OceanView {
             for (int j = 0; j < ocean.getHorizontalSize(); ++j) {
                 if (ocean.getField()[j][i].hasShip()) {
                     view.append(" ▽");
-                }
-                else {
+                } else {
                     view.append(" ◦");
                 }
             }

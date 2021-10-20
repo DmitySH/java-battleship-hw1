@@ -3,10 +3,12 @@ package battleship;
 import battleship.ships.PlacementException;
 import battleship.utilities.InputHelper;
 
+import java.util.ArrayList;
+
 
 public final class BattleshipGame {
     public static final InputHelper inputHelper = InputHelper.getInstance();
-
+    private static final ArrayList<Integer> scores = new ArrayList<>();
     private Fleet fleet;
     private Ocean ocean;
     private int totalShots;
@@ -27,7 +29,7 @@ public final class BattleshipGame {
                         "Enter exit to close the game or any other word to play again");
                 String choice = inputHelper.getLine();
 
-                if(choice.equals("exit")){
+                if (choice.equals("exit")) {
                     endGame = true;
                 }
             }
@@ -70,16 +72,24 @@ public final class BattleshipGame {
         System.out.println(fleet.getOcean());
         System.out.println(ocean.openedOcean());
 
-        while (fleet.getShipsNumber() > 0) {
-            int[] coordinates = inputHelper.enterCell(0, ocean.getVerticalSize(),
-                    0, ocean.getHorizontalSize(),
-                    "Enter pair <letter> <number>: ",
-                    "Incorrect! Try again: ", 5);
-
-            System.out.println(ocean.shot(coordinates[0], coordinates[1]));
-
+//        while (fleet.getShipsNumber() > 0) {
+//            int[] coordinates = inputHelper.enterCell(0, ocean.getVerticalSize(),
+//                    0, ocean.getHorizontalSize(),
+//                    "Enter pair <letter> <number>: ",
+//                    "Incorrect! Try again: ", 5);
+//
+//            System.out.println(ocean.shot(coordinates[0], coordinates[1]));
+//            System.out.println(ocean);
+//            ++totalShots;
+//        }
+        for (int i = 0; i < ocean.getVerticalSize(); ++i) {
+            for (int j = 0; j < ocean.getHorizontalSize(); ++j) {
+                System.out.println(ocean.shot(i, j));
+                System.out.println(ocean);
+            }
         }
 
+        scores.add(totalShots);
     }
 
     public static void printInput(int shipCells) {

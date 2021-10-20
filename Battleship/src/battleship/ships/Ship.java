@@ -3,6 +3,7 @@ package battleship.ships;
 
 import battleship.Fleet;
 import battleship.Ocean;
+import battleship.utilities.Point;
 
 import java.util.Random;
 
@@ -12,8 +13,8 @@ public abstract class Ship {
     protected Fleet fleet;
     protected int health;
     protected int size;
-    protected int begin;
-    protected int end;
+    protected Point begin;
+    protected Point end;
     protected boolean isHorizontal;
 
     protected Ship(int health, Fleet fleet) {
@@ -37,11 +38,11 @@ public abstract class Ship {
         return size;
     }
 
-    public int getBegin() {
+    public Point getBegin() {
         return begin;
     }
 
-    public int getEnd() {
+    public Point getEnd() {
         return end;
     }
 
@@ -61,24 +62,32 @@ public abstract class Ship {
                 case 0:
                     if (ocean.isFree(x, x, y - size + 1, y)) {
                         ocean.placeShip(x, x, y - size + 1, y, this);
+                        begin = new Point(x, y - size + 1);
+                        end = new Point(x, y);
                         placed = true;
                     }
                     break;
                 case 1:
                     if (ocean.isFree(x, x + size - 1, y, y)) {
                         ocean.placeShip(x, x + size - 1, y, y, this);
+                        begin = new Point(x, y);
+                        end = new Point(x + size - 1, y);
                         placed = true;
                     }
                     break;
                 case 2:
                     if (ocean.isFree(x, x, y + size - 1, y)) {
                         ocean.placeShip(x, x, y + size - 1, y, this);
+                        begin = new Point(x, y + size - 1);
+                        end = new Point(x, y);
                         placed = true;
                     }
                     break;
                 case 3:
                     if (ocean.isFree(x, x - size + 1, y, y)) {
                         ocean.placeShip(x, x - size + 1, y, y, this);
+                        begin = new Point(x, y);
+                        end = new Point(x - size + 1, y);
                         placed = true;
                     }
                     break;

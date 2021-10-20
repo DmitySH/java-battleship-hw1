@@ -92,8 +92,24 @@ public final class Ocean {
                     && currentY >= 0 && currentY < getVerticalSize()
                     && !field[currentX][currentY].hasShip()) {
                 field[currentX][currentY].makeFired();
+                oceanView.fireAtCell(currentX, currentY, '⊛');
             }
         }
+    }
+
+    private void sinkTheShip(Ship ship) {
+        int x1 = ship.getBegin().x();
+        int x2 = ship.getEnd().x();
+        int y1 = ship.getBegin().y();
+        int y2 = ship.getEnd().y();
+
+        for (int i = Math.min(x1, x2); i <= Math.max(x1, x2); ++i) {
+            for (int j = Math.min(y1, y2); j <= Math.max(y1, y2); ++j) {
+                fireAroundCell(i, j);
+                oceanView.fireAtCell(i, j, '♰');
+            }
+        }
+
     }
 
     public String shot(int x, int y) {
@@ -105,14 +121,14 @@ public final class Ocean {
         cell.makeFired();
         if(cell.hasShip()) {
             cell.getShip().decreaseHealth();
-
             if(cell.getShip().getHealth() == 0){
+                sinkTheShip(cell.getShip());
                 return cell.getShip().sunk();
             }
-
+            oceanView.fireAtCell(x, y, '✗');
             return String.format("%s%c, %d%s\n", "You hit ship at (", x + 'a', y + 1, ")");
-
         } else {
+            oceanView.fireAtCell(x, y, '⊛');
             return String.format("%s%c, %d%s\n", "You missed at (", x + 'a', y + 1, ")");
         }
     }
