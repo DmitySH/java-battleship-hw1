@@ -1,8 +1,7 @@
 package battleship;
 
-import battleship.ships.Ship;
 
-public class OceanView {
+public final class OceanView {
     private StringBuilder view;
     private final Ocean ocean;
     private int lengthOfLine;

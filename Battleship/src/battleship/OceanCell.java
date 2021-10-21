@@ -2,7 +2,7 @@ package battleship;
 
 import battleship.ships.Ship;
 
-public class OceanCell {
+public final class OceanCell {
     private boolean isBlocked;
     private boolean isFired;
     private Ship ship;
