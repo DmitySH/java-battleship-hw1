@@ -70,7 +70,14 @@ public final class BattleshipGame implements Game {
     }
 
     private void rules() {
-        System.out.println("Rules");
+        System.out.println("\nRules of this game are same as in usual battleship game\n" +
+                "First of all you should define size of gaming field (Ocean)\n" +
+                "Next step is to define how many ships of each type computer will create on this field\n" +
+                "Tip: number of cells which can take fleet depends on size of an Ocean\n" +
+                "During the game you will say cell's coordinates to fire in format <letter> <number>\n" +
+                "You can miss, hit or sink ship\n" +
+                "Your visible part of ocean will update automatically\n" +
+                "If you want to end this game enter finish instead of coordinates and you will see fleet");
     }
 
     private void scoreboard() {
@@ -111,24 +118,28 @@ public final class BattleshipGame implements Game {
         System.out.println(fleet);
 
         System.out.println(fleet.getOcean());
-        System.out.println(ocean.openedOcean());
 
-//        while (fleet.getShipsNumber() > 0) {
-//            int[] coordinates = inputHelper.enterCell(0, ocean.getVerticalSize(),
-//                    0, ocean.getHorizontalSize(),
-//                    "Enter pair <letter> <number>: ",
-//                    "Incorrect! Try again: ", 5);
-//
-//            System.out.println(ocean.shot(coordinates[0], coordinates[1]));
-//            System.out.println(ocean);
-//            ++totalShots;
-//        }
-        for (int i = 0; i < ocean.getVerticalSize(); ++i) {
-            for (int j = 0; j < ocean.getHorizontalSize(); ++j) {
-                System.out.println(ocean.shot(i, j));
-                System.out.println(ocean);
+        while (fleet.getShipsNumber() > 0) {
+            int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
+                    0, ocean.getVerticalSize() - 1,
+                    "Enter pair <letter> <number>: ",
+                    "Incorrect! Try again: ", 5, "finish");
+
+            if (coordinates[0] == -1) {
+                System.out.println("Your fleet was here\n");
+                System.out.println(ocean.openedOcean());
+                return;
             }
+            System.out.println(ocean.shot(coordinates[0], coordinates[1]));
+            System.out.println(ocean);
+            ++totalShots;
         }
+//        for (int i = -1; i < ocean.getVerticalSize() + 1; ++i) {
+//            for (int j = -1; j < ocean.getHorizontalSize() + 1; ++j) {
+//                System.out.println(ocean.shot(j, i));
+//                System.out.println(ocean);
+//            }
+//        }
         System.out.println("You won!\n");
 
         scores.add(totalShots);

@@ -2,6 +2,7 @@ package battleship.utilities;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Locale;
 import java.util.Scanner;
 
 public final class InputHelper {
@@ -41,10 +42,9 @@ public final class InputHelper {
     }
 
     public int[] enterCell(int from1, int to1, int from2, int to2,
-                           String prompt, String errorMessage, int attempts) {
+                           String prompt, String errorMessage, int attempts, String end) {
         out.print(prompt);
         String[] input;
-
         int current_attempt = 0;
         int[] res = new int[2];
         boolean isCorrect = false;
@@ -55,12 +55,16 @@ public final class InputHelper {
             }
 
             try {
-                input = in.nextLine().split(" ");
-                if (input.length != 2){
+                String rawInput = in.nextLine();
+                if (rawInput.toLowerCase(Locale.ROOT).equals(end)) {
+                    return new int[]{-1, -1};
+                }
+                input = rawInput.split(" ");
+                if (input.length != 2) {
                     throw new NumberFormatException("You did not enter correct pair!");
                 }
-                res[1] = Integer.parseInt(input[1]) - 1;
                 res[0] = input[0].charAt(0) - 'a';
+                res[1] = Integer.parseInt(input[1]) - 1;
                 if (res[1] >= from2 && res[1] <= to2 && input[0].length() == 1
                         && res[0] >= from1 && res[0] <= to1) {
                     isCorrect = true;

@@ -25,7 +25,6 @@ public final class OceanView {
         }
         lengthOfLine = (view.length() - beforeFieldLength) / ocean.getVerticalSize();
 
-        System.out.println(lengthOfLine);
         createLowerBound();
     }
 

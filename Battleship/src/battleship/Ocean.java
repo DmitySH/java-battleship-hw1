@@ -113,6 +113,9 @@ public final class Ocean {
     }
 
     public String shot(int x, int y) {
+        if (x < 0 || x >= horizontalSize || y < 0 || y >= verticalSize){
+            return "Incorrect cell";
+        }
         OceanCell cell = field[x][y];
         if (cell.isFired()) {
             return String.format("%s%c, %d%s\n", "Cell (", (x + 'a'), y + 1, ") already was fired");
