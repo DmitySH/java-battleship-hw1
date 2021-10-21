@@ -1,42 +1,83 @@
 package battleship;
 
+import battleship.Interfaces.Game;
 import battleship.ships.PlacementException;
 import battleship.utilities.InputHelper;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 
-public final class BattleshipGame {
+public final class BattleshipGame implements Game {
     public static final InputHelper inputHelper = InputHelper.getInstance();
     private static final ArrayList<Integer> scores = new ArrayList<>();
     private Fleet fleet;
     private Ocean ocean;
     private int totalShots;
+    private final String[] args;
 
     public static void main(String[] args) {
-        BattleshipGame gameSession;
-        boolean endGame = false;
-        while (!endGame) {
+        Game gameSession;
+        System.out.println("Welcome to Battleship game!");
+        boolean exit = false;
+        while (!exit) {
+            gameSession = new BattleshipGame(args);
             try {
-                gameSession = new BattleshipGame();
-
-
-                gameSession.initializeGame(args);
-                gameSession.playGame();
-                endGame = true;
+                exit = gameSession.menu();
             } catch (PlacementException ignored) {
-                System.out.println("Can not generate game with such parameters.\n" +
-                        "Enter exit to close the game or any other word to play again");
-                String choice = inputHelper.getLine();
-
-                if (choice.equals("exit")) {
-                    endGame = true;
-                }
+                System.out.println("Can not generate game with such parameters");
             }
         }
     }
 
-    public void initializeGame(String[] args) throws PlacementException {
+    public BattleshipGame(String[] args) {
+        this.args = args;
+    }
+
+    public boolean menu() throws PlacementException {
+        String choice;
+        printMenu();
+        boolean nextGame = false;
+        while (!nextGame) {
+            System.out.print("Your choice is ");
+            choice = inputHelper.getLine().toLowerCase(Locale.ROOT);
+            switch (choice) {
+                case "play" -> {
+                    playGame();
+                    nextGame = true;
+                }
+                case "rules" -> {
+                    rules();
+                    printMenu();
+                }
+                case "score" -> scoreboard();
+                case "exit" -> {
+                    System.out.println("Good bye!");
+                    return true;
+                }
+                default -> System.out.println("No such option");
+            }
+        }
+        return false;
+    }
+
+    private void printMenu() {
+        System.out.printf("%s\n%s\n%s\n%s\n%s\n", "You can enter:",
+                "\t▷ play - start the game",
+                "\t▷ rules - see rules",
+                "\t▷ score - see scoreboard",
+                "\t▷ exit - leave the game");
+    }
+
+    private void rules() {
+        System.out.println("Rules");
+    }
+
+    private void scoreboard() {
+        System.out.println("Scroeboard");
+    }
+
+    private void initializeGame() throws PlacementException {
         try {
             totalShots = 0;
             int horizontalSize;
@@ -65,8 +106,8 @@ public final class BattleshipGame {
         }
     }
 
-    public void playGame() {
-        System.out.println("Game started!");
+    public void playGame() throws PlacementException {
+        initializeGame();
         System.out.println(fleet);
 
         System.out.println(fleet.getOcean());
@@ -88,11 +129,12 @@ public final class BattleshipGame {
                 System.out.println(ocean);
             }
         }
+        System.out.println("You won!\n");
 
         scores.add(totalShots);
     }
 
-    public static void printInput(int shipCells) {
+    private void printInput(int shipCells) {
         System.out.printf("\n%s\n%s %d %s%n",
                 "Now you should enter how many ships computer will generate.",
                 "You have maximum",
