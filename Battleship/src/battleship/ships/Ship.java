@@ -15,7 +15,6 @@ public abstract class Ship {
     protected int size;
     protected Point begin;
     protected Point end;
-    protected boolean isHorizontal;
 
     protected Ship(int health, Fleet fleet) {
         this.health = health;
@@ -26,16 +25,8 @@ public abstract class Ship {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
     public void decreaseHealth(){
         --health;
-    }
-
-    public int getSize() {
-        return size;
     }
 
     public Point getBegin() {
@@ -44,10 +35,6 @@ public abstract class Ship {
 
     public Point getEnd() {
         return end;
-    }
-
-    public boolean isHorizontal() {
-        return isHorizontal;
     }
 
     public void placeInOcean(Ocean ocean) throws PlacementException {

@@ -46,7 +46,7 @@ public final class InputHelper {
         out.print(prompt);
         String[] input;
         int current_attempt = 0;
-        int[] res = new int[2];
+        int[] res = null;
         boolean isCorrect = false;
 
         while (!isCorrect) {
@@ -57,17 +57,30 @@ public final class InputHelper {
             try {
                 String rawInput = in.nextLine();
                 if (rawInput.toLowerCase(Locale.ROOT).equals(end)) {
-                    return new int[]{-1, -1};
+                    return new int[]{-1, -1, -1};
                 }
+
                 input = rawInput.split(" ");
-                if (input.length != 2) {
-                    throw new NumberFormatException("You did not enter correct pair!");
+                res = new int[input.length];
+
+                if (input.length != 2 && input.length != 3) {
+                    throw new NumberFormatException("You did not enter correct coordinates!");
                 }
-                res[0] = input[0].charAt(0) - 'a';
-                res[1] = Integer.parseInt(input[1]) - 1;
+                res[0] = input[input.length / 3].charAt(0) - 'a';
+                res[1] = Integer.parseInt(input[1 + input.length / 3]) - 1;
+
                 if (res[1] >= from2 && res[1] <= to2 && input[0].length() == 1
                         && res[0] >= from1 && res[0] <= to1) {
                     isCorrect = true;
+                    if (input.length == 3) {
+                        if (input[0].equals("T")){
+                            res[2] = 1;
+                        }
+                        else {
+                            isCorrect = false;
+                            out.print(errorMessage);
+                        }
+                    }
                 } else {
                     out.print(errorMessage);
                 }

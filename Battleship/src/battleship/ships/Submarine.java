@@ -10,6 +10,7 @@ public final class Submarine extends Ship {
 
     @Override
     public String sunk() {
+        health = 0;
         fleet.decreaseSubmarines();
         fleet.getShips().remove(this);
         return "You just have sunk a Submarine.";

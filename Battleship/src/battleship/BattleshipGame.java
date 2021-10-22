@@ -15,6 +15,7 @@ public final class BattleshipGame implements Game {
     private Fleet fleet;
     private Ocean ocean;
     private int totalShots;
+    private int torpedoes;
     private final String[] args;
 
     public static void main(String[] args) {
@@ -93,8 +94,7 @@ public final class BattleshipGame implements Game {
         for (int i = 0; i < 10; ++i) {
             if (scores.size() <= i) {
                 System.out.println(i + 1 + ") TBD");
-            }
-            else {
+            } else {
                 System.out.printf("%d) %d %s %dx%d ocean with %d ships\n",
                         i + 1, scores.get(i)[3], "shots in",
                         scores.get(i)[0], scores.get(i)[1], scores.get(i)[2]);
@@ -107,7 +107,7 @@ public final class BattleshipGame implements Game {
             totalShots = 0;
             int horizontalSize;
             int verticalSize;
-            if (args.length != 7) {
+            if (args.length != 8) {
                 horizontalSize = inputHelper.parseInt(1, 26, "Input horizontal size of an Ocean: ",
                         "Incorrect! Try again: ", 5);
                 verticalSize = inputHelper.parseInt(1, 26, "Input vertical size of an Ocean: ",
@@ -117,6 +117,9 @@ public final class BattleshipGame implements Game {
 
                 ocean = new Ocean(verticalSize, horizontalSize);
                 fleet = Fleet.consoleCreateFleet(shipCells, ocean);
+                torpedoes = inputHelper.parseInt(0, fleet.getShipsNumber(),
+                        "Input number of torpedoes (max = " + fleet.getShipsNumber() + "): ",
+                        "Incorrect! Try again: ", 5);
             } else {
                 horizontalSize = inputHelper.parseIntFromString(args[0], 1, 26);
                 verticalSize = inputHelper.parseIntFromString(args[1], 1, 26);
@@ -124,6 +127,7 @@ public final class BattleshipGame implements Game {
 
                 ocean = new Ocean(verticalSize, horizontalSize);
                 fleet = Fleet.fromArgsCreateFleet(shipCells, args, ocean);
+                torpedoes = inputHelper.parseIntFromString(args[7], 0, fleet.getShipsNumber());
             }
         } catch (NumberFormatException ex) {
             System.out.println(ex.getMessage() + " Restart game!");
@@ -133,20 +137,20 @@ public final class BattleshipGame implements Game {
 
     public void playGame() throws PlacementException {
         initializeGame();
-        System.out.println(fleet);
-
-        System.out.println(fleet.getOcean());
-
         int totalShips = fleet.getShipsNumber();
-        if (totalShips == 0){
+        if (totalShips == 0) {
             System.out.println("That's not interesting...");
             return;
         }
+
+        System.out.println(fleet);
+        System.out.println(fleet.getOcean());
+
         while (fleet.getShipsNumber() > 0) {
             try {
                 int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
                         0, ocean.getVerticalSize() - 1,
-                        "Enter pair <letter> <number>: ",
+                        "Enter <letter> <number> (or add T before it to use torpedo): ",
                         "Incorrect! Try again: ", 10, "finish");
 
                 if (coordinates[0] == -1) {
@@ -154,9 +158,18 @@ public final class BattleshipGame implements Game {
                     System.out.println(ocean.openedOcean());
                     return;
                 }
-                System.out.println(ocean.shot(coordinates[0], coordinates[1]));
+                boolean torpedo = coordinates.length == 3;
+                if (torpedo && torpedoes <= 0) {
+                    System.out.println("No available torpedoes!");
+                    continue;
+                }
+                System.out.println(ocean.shot(coordinates[0], coordinates[1], torpedo));
                 System.out.println(ocean);
                 ++totalShots;
+                if (torpedo) {
+                    --torpedoes;
+                    System.out.printf("%d %s\n", torpedoes, "torpedoes left");
+                }
             } catch (NumberFormatException ex) {
                 System.out.println(ex.getMessage() + " Restart game!");
                 System.exit(1);
@@ -169,7 +182,7 @@ public final class BattleshipGame implements Game {
 //                System.out.println(ocean);
 //            }
 //        }
-        System.out.println("You won!\n");
+        System.out.printf("%s %d %s", "You won with", totalShots, "shots!\n\n");
 
         scores.add(new int[]{ocean.getHorizontalSize(), ocean.getVerticalSize(), totalShips, totalShots});
     }
@@ -187,7 +200,7 @@ public final class BattleshipGame implements Game {
                 ●\tDestroyer: 2 cells
                 ●\tSubmarine: 1 cells""");
         System.out.println("""
-                
+                                
                 You will start input number of ships for each type,
                 starting with the biggest (Carrier) and finishing
                 with the smallest (Submarine)
