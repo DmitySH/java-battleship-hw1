@@ -112,7 +112,7 @@ public final class Fleet {
                 "Incorrect! Try again: ", 5);
         shipCells -= carriers * 5;
 
-        int battleships = inputHelper.parseInt(0, shipCells / 5,
+        int battleships = inputHelper.parseInt(0, shipCells / 4,
                 String.format("Input number of Battleships (%d cells left, one = 4 cells): ", shipCells),
                 "Incorrect! Try again: ", 5);
         shipCells -= battleships * 4;

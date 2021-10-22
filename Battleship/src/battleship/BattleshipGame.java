@@ -174,7 +174,6 @@ public final class BattleshipGame implements Game {
                 System.out.println(ex.getMessage() + " Restart game!");
                 System.exit(1);
             }
-
         }
 //        for (int i = -1; i < ocean.getVerticalSize() + 1; ++i) {
 //            for (int j = -1; j < ocean.getHorizontalSize() + 1; ++j) {
