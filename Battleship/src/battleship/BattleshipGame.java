@@ -17,6 +17,7 @@ public final class BattleshipGame implements Game {
     private int totalShots;
     private int torpedoes;
     private final String[] args;
+    private boolean recoveryMode;
 
     public static void main(String[] args) {
         Game gameSession;
@@ -129,6 +130,9 @@ public final class BattleshipGame implements Game {
                 fleet = Fleet.fromArgsCreateFleet(shipCells, args, ocean);
                 torpedoes = inputHelper.parseIntFromString(args[7], 0, fleet.getShipsNumber());
             }
+
+            recoveryMode = inputHelper.enterBoolean("Would you like to play in recovery mode (enter yes or no): ",
+                    "Incorrect! Try again: ", 5);
         } catch (NumberFormatException ex) {
             System.out.println(ex.getMessage() + " Restart game!");
             System.exit(1);
@@ -165,7 +169,7 @@ public final class BattleshipGame implements Game {
                     System.out.println("No available torpedoes!");
                     continue;
                 }
-                System.out.println(ocean.shot(coordinates[0], coordinates[1], torpedo));
+                System.out.println(ocean.shot(coordinates[0], coordinates[1], torpedo, recoveryMode));
                 System.out.println(ocean);
                 ++totalShots;
                 if (torpedo) {

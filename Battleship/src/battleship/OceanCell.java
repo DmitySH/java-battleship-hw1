@@ -17,8 +17,8 @@ public final class OceanCell {
         isBlocked = true;
     }
 
-    public void makeFired() {
-        isFired = true;
+    public void setFired(boolean isFired) {
+        this.isFired = isFired;
     }
 
     public boolean isBlocked() {

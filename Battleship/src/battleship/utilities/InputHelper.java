@@ -41,6 +41,32 @@ public final class InputHelper {
         return res;
     }
 
+    public boolean enterBoolean(String prompt, String errorMessage, int attempts){
+        out.print(prompt);
+        String input;
+        boolean isCorrect = false;
+        int current_attempt = 0;
+        boolean res = true;
+
+        while (!isCorrect) {
+            if (current_attempt >= attempts) {
+                throw new NumberFormatException("You did not enter yes or no!");
+            }
+            input = in.nextLine();
+            if (input.toLowerCase(Locale.ROOT).equals("yes")){
+                isCorrect = true;
+            } else if(input.toLowerCase(Locale.ROOT).equals("no")) {
+                isCorrect = true;
+                res = false;
+            } else {
+                out.print(errorMessage);
+            }
+            ++current_attempt;
+        }
+
+        return res;
+    }
+
     public int[] enterCell(int from1, int to1, int from2, int to2,
                            String prompt, String errorMessage, int attempts, String end) {
         out.print(prompt);

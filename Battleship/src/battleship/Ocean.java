@@ -4,7 +4,6 @@ package battleship;
 import battleship.Interfaces.Action;
 import battleship.ships.Ship;
 
-import java.util.function.UnaryOperator;
 
 public final class Ocean {
     private final int verticalSize;
@@ -12,11 +11,13 @@ public final class Ocean {
     private final OceanCell[][] field;
     private final OceanView oceanView;
     private final Action sinkTheShip;
-    private final Action recoverTheShip;
+    private final Action recoverFieldOfTheShip;
+    private OceanCell lastShot;
 
     public Ocean(int verticalSize, int horizontalSize) {
         this.verticalSize = verticalSize;
         this.horizontalSize = horizontalSize;
+        lastShot = null;
         field = new OceanCell[horizontalSize][verticalSize];
         clear();
 
@@ -27,7 +28,8 @@ public final class Ocean {
             fireAroundCell(i, j);
             oceanView.fireAtCell(i, j, '♰');
         };
-        recoverTheShip = (i, j) -> {
+        recoverFieldOfTheShip = (i, j) -> {
+            field[i][j].setFired(false);
             oceanView.fireAtCell(i, j, '◦');
         };
     }
@@ -106,7 +108,7 @@ public final class Ocean {
             if (currentX >= 0 && currentX < getHorizontalSize()
                     && currentY >= 0 && currentY < getVerticalSize()
                     && !field[currentX][currentY].hasShip()) {
-                field[currentX][currentY].makeFired();
+                field[currentX][currentY].setFired(true);
                 oceanView.fireAtCell(currentX, currentY, '⊛');
             }
         }
@@ -126,31 +128,46 @@ public final class Ocean {
         }
     }
 
-    public String shot(int x, int y, boolean torpedo) {
+    public String shot(int x, int y, boolean torpedo, boolean recoveryMode) {
         if (x < 0 || x >= horizontalSize || y < 0 || y >= verticalSize) {
             return "Incorrect cell";
         }
         OceanCell cell = field[x][y];
         if (cell.isFired()) {
+            recoverShip();
             return String.format("%s%c, %d%s\n", "Cell (", x + 'a', y + 1, ") already was fired");
         }
 
-        cell.makeFired();
+        cell.setFired(true);
         if (cell.hasShip()) {
             if (torpedo) {
+                recoverShip();
                 goThroughShip(cell.getShip(), sinkTheShip);
                 return cell.getShip().sunk();
             }
             cell.getShip().decreaseHealth();
             if (cell.getShip().getHealth() == 0) {
+                recoverShip();
                 goThroughShip(cell.getShip(), sinkTheShip);
                 return cell.getShip().sunk();
+            }
+            if (recoveryMode) {
+                lastShot = cell;
             }
             oceanView.fireAtCell(x, y, '✗');
             return String.format("%s%c, %d%s\n", "You hit ship at (", x + 'a', y + 1, ")");
         } else {
+            recoverShip();
             oceanView.fireAtCell(x, y, '⊛');
             return String.format("%s%c, %d%s\n", "You missed at (", x + 'a', y + 1, ")");
         }
+    }
+
+    private void recoverShip() {
+        if (lastShot != null) {
+            lastShot.getShip().recovery();
+            goThroughShip(lastShot.getShip(), recoverFieldOfTheShip);
+        }
+        lastShot = null;
     }
 }
