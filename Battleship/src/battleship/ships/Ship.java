@@ -5,6 +5,7 @@ import battleship.Fleet;
 import battleship.Ocean;
 import battleship.utilities.Point;
 
+import java.util.Objects;
 import java.util.Random;
 
 public abstract class Ship {
@@ -25,7 +26,7 @@ public abstract class Ship {
         return health;
     }
 
-    public void decreaseHealth(){
+    public void decreaseHealth() {
         --health;
     }
 
@@ -86,9 +87,26 @@ public abstract class Ship {
         }
     }
 
-    public void recovery(){
+    public void recovery() {
         health = size;
     }
 
     public abstract String sunk();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Ship ship = (Ship) o;
+        return begin.equals(ship.begin) && end.equals(ship.end);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(begin, end);
+    }
 }

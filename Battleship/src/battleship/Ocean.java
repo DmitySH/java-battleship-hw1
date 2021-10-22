@@ -4,6 +4,8 @@ package battleship;
 import battleship.Interfaces.Action;
 import battleship.ships.Ship;
 
+import java.util.Scanner;
+
 
 public final class Ocean {
     private final int verticalSize;
@@ -26,6 +28,7 @@ public final class Ocean {
 
         sinkTheShip = (i, j) -> {
             fireAroundCell(i, j);
+            field[i][j].setFired(true);
             oceanView.fireAtCell(i, j, '♰');
         };
         recoverFieldOfTheShip = (i, j) -> {
@@ -133,41 +136,38 @@ public final class Ocean {
             return "Incorrect cell";
         }
         OceanCell cell = field[x][y];
+        if (recoveryMode) {
+            recoverShip(cell);
+        }
+        lastShot = cell;
+
         if (cell.isFired()) {
-            recoverShip();
             return String.format("%s%c, %d%s\n", "Cell (", x + 'a', y + 1, ") already was fired");
         }
 
         cell.setFired(true);
         if (cell.hasShip()) {
-            if (torpedo) {
-                recoverShip();
-                goThroughShip(cell.getShip(), sinkTheShip);
-                return cell.getShip().sunk();
-            }
             cell.getShip().decreaseHealth();
-            if (cell.getShip().getHealth() == 0) {
-                recoverShip();
+            if (cell.getShip().getHealth() == 0 || torpedo) {
                 goThroughShip(cell.getShip(), sinkTheShip);
+                lastShot = null;
                 return cell.getShip().sunk();
             }
-            if (recoveryMode) {
-                lastShot = cell;
-            }
+
             oceanView.fireAtCell(x, y, '✗');
             return String.format("%s%c, %d%s\n", "You hit ship at (", x + 'a', y + 1, ")");
         } else {
-            recoverShip();
             oceanView.fireAtCell(x, y, '⊛');
             return String.format("%s%c, %d%s\n", "You missed at (", x + 'a', y + 1, ")");
         }
     }
 
-    private void recoverShip() {
-        if (lastShot != null) {
+    private void recoverShip(OceanCell currentCell) {
+        if (lastShot != null && !currentCell.equalsShips(lastShot)
+                && lastShot.hasShip() && lastShot.getShip().getHealth() > 0) {
             lastShot.getShip().recovery();
             goThroughShip(lastShot.getShip(), recoverFieldOfTheShip);
+            lastShot = currentCell;
         }
-        lastShot = null;
     }
 }

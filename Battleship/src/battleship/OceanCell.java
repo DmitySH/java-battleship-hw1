@@ -13,6 +13,10 @@ public final class OceanCell {
         ship = null;
     }
 
+    public boolean equalsShips(OceanCell other) {
+        return this.hasShip() && other.hasShip() && this.ship.equals(other.ship);
+    }
+
     public void makeBlocked() {
         isBlocked = true;
     }

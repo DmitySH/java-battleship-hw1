@@ -7,9 +7,11 @@ import battleship.utilities.InputHelper;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Random;
 
 
 public final class BattleshipGame implements Game {
+    public static final Random rnd = new Random();
     public static final InputHelper inputHelper = InputHelper.getInstance();
     private static final ArrayList<int[]> scores = new ArrayList<>();
     private Fleet fleet;
@@ -147,13 +149,13 @@ public final class BattleshipGame implements Game {
             return;
         }
 
-
-
         System.out.println(fleet);
         System.out.println(ocean);
 
         while (fleet.getShipsNumber() > 0) {
             try {
+//                int[] coordinates = new int[2];
+                System.out.println(ocean.openedOcean());
                 int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
                         0, ocean.getVerticalSize() - 1,
                         "Enter <letter> <number> (or add T before it to use torpedo): ",
@@ -169,6 +171,8 @@ public final class BattleshipGame implements Game {
                     System.out.println("No available torpedoes!");
                     continue;
                 }
+//                coordinates[0] = rnd.nextInt(ocean.getHorizontalSize());
+//                coordinates[1] = rnd.nextInt(ocean.getVerticalSize());
                 System.out.println(ocean.shot(coordinates[0], coordinates[1], torpedo, recoveryMode));
                 System.out.println(ocean);
                 ++totalShots;
@@ -187,8 +191,17 @@ public final class BattleshipGame implements Game {
 //                System.out.println(ocean);
 //            }
 //        }
-        System.out.printf("%s %d %s", "You won with", totalShots, "shots!\n\n");
 
+//        scores.add(new int[]{ocean.getHorizontalSize(), ocean.getVerticalSize(), totalShips, totalShots});
+//
+//
+//        int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
+//                        0, ocean.getVerticalSize() - 1,
+//                        "Enter <letter> <number> (or add T before it to use torpedo): ",
+//                        "Incorrect! Try again: ", 10, "finish");
+//
+//        System.out.println(ocean.shot(coordinates[0], coordinates[1], false, recoveryMode));
+        System.out.printf("%s %d %s", "You won with", totalShots, "shots!\n\n");
         scores.add(new int[]{ocean.getHorizontalSize(), ocean.getVerticalSize(), totalShips, totalShots});
     }
 

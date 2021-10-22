@@ -53,10 +53,6 @@ public final class Fleet {
         --this.carriers;
     }
 
-    public Ocean getOcean() {
-        return ocean;
-    }
-
     public int getShipsNumber() {
         return submarines + cruisers + destroyers + battleships + carriers;
     }
