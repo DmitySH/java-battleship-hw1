@@ -9,10 +9,7 @@ public final class Cruiser extends Ship {
     }
 
     @Override
-    public String sunk() {
-        health = 0;
-        fleet.decreaseCruisers();
-        fleet.getShips().remove(this);
-        return "You just have sunk a Cruiser.";
+    public String toString() {
+        return "Cruiser";
     }
 }

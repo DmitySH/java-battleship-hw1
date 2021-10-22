@@ -1,11 +1,13 @@
 package battleship.utilities;
 
+import battleship.Interfaces.Input;
+
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Locale;
 import java.util.Scanner;
 
-public final class InputHelper {
+public final class InputHelper implements Input {
     private static InputHelper instance;
 
     private PrintStream out;

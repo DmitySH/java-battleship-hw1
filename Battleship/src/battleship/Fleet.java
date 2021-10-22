@@ -1,30 +1,30 @@
 package battleship;
 
+import battleship.Interfaces.Water;
+import battleship.Interfaces.WaterSquad;
 import battleship.ships.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static battleship.BattleshipGame.inputHelper;
 
-public final class Fleet {
+public final class Fleet implements WaterSquad {
     private final ArrayList<Ship> ships;
+    private final Water ocean;
+    private final HashMap<String, Integer> numberOfShips;
 
-    private final Ocean ocean;
-    private int submarines;
-    private int destroyers;
-    private int cruisers;
-    private int battleships;
-    private int carriers;
-
-    public Fleet(int submarines, int destroyers, int cruisers, int battleships, int carriers, Ocean ocean) throws PlacementException {
+    public Fleet(int submarines, int destroyers, int cruisers,
+                 int battleships, int carriers, Ocean ocean) throws PlacementException {
         this.ocean = ocean;
         ships = new ArrayList<>();
 
-        this.submarines = submarines;
-        this.destroyers = destroyers;
-        this.cruisers = cruisers;
-        this.battleships = battleships;
-        this.carriers = carriers;
+        numberOfShips = new HashMap<>();
+        numberOfShips.put("Submarine", submarines);
+        numberOfShips.put("Destroyer", destroyers);
+        numberOfShips.put("Cruiser", cruisers);
+        numberOfShips.put("Battleship", battleships);
+        numberOfShips.put("Carrier", carriers);
 
         initializeFleet(submarines, destroyers, cruisers, battleships, carriers);
     }
@@ -33,28 +33,16 @@ public final class Fleet {
         return ships;
     }
 
-    public void decreaseSubmarines() {
-        --this.submarines;
-    }
-
-    public void decreaseDestroyers() {
-        --this.destroyers;
-    }
-
-    public void decreaseCruisers() {
-        --this.cruisers;
-    }
-
-    public void decreaseBattleships() {
-        --this.battleships;
-    }
-
-    public void decreaseCarriers() {
-        --this.carriers;
+    public void decreaseShip(String shipType) {
+        numberOfShips.put(shipType, numberOfShips.get(shipType) - 1);
     }
 
     public int getShipsNumber() {
-        return submarines + cruisers + destroyers + battleships + carriers;
+        return numberOfShips.get("Submarine") +
+                numberOfShips.get("Destroyer") +
+                numberOfShips.get("Cruiser") +
+                numberOfShips.get("Battleship") +
+                numberOfShips.get("Carrier");
     }
 
     private void initializeFleet(int submarines, int destroyers,
@@ -98,12 +86,12 @@ public final class Fleet {
                 ++attempt;
                 ships.clear();
                 ocean.clear();
-                submarines = this.submarines;
-                destroyers = this.destroyers;
-                cruisers = this.cruisers;
-                battleships = this.battleships;
-                carriers = this.carriers;
-                if (attempt == 10000){
+                submarines = numberOfShips.get("Submarine");
+                destroyers = numberOfShips.get("Destroyer");
+                cruisers = numberOfShips.get("Cruiser");
+                battleships = numberOfShips.get("Battleship");
+                carriers = numberOfShips.get("Carrier");
+                if (attempt == 10000) {
                     throw ex;
                 }
             }
@@ -114,11 +102,11 @@ public final class Fleet {
     public String toString() {
         return String.format("%s\n%s %d\n%s %d\n%s %d\n%s %d\n%s %d\n",
                 "Current fleet:",
-                "●\tCarriers:", carriers,
-                "●\tBattleships:", battleships,
-                "●\tCruisers:", cruisers,
-                "●\tDestroyers:", destroyers,
-                "●\tSubmarines:", submarines);
+                "●\tCarriers:", numberOfShips.get("Carrier"),
+                "●\tBattleships:", numberOfShips.get("Battleship"),
+                "●\tCruisers:", numberOfShips.get("Cruiser"),
+                "●\tDestroyers:", numberOfShips.get("Destroyer"),
+                "●\tSubmarines:", numberOfShips.get("Submarine"));
     }
 
     public static Fleet consoleCreateFleet(int shipCells, Ocean ocean) throws PlacementException {

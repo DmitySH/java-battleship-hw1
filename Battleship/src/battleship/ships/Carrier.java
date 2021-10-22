@@ -9,10 +9,7 @@ public final class Carrier extends Ship {
     }
 
     @Override
-    public String sunk() {
-        health = 0;
-        fleet.decreaseCarriers();
-        fleet.getShips().remove(this);
-        return "You just have sunk a Carrier.";
+    public String toString() {
+        return "Carrier";
     }
 }

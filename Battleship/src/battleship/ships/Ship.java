@@ -2,7 +2,8 @@ package battleship.ships;
 
 
 import battleship.Fleet;
-import battleship.Ocean;
+import battleship.Interfaces.Water;
+import battleship.Interfaces.WaterSquad;
 import battleship.utilities.Point;
 
 import java.util.Objects;
@@ -11,15 +12,15 @@ import java.util.Random;
 public abstract class Ship {
     private static final Random rnd = new Random();
 
-    protected Fleet fleet;
+    protected WaterSquad squad;
     protected int health;
     protected int size;
     protected Point begin;
     protected Point end;
 
-    protected Ship(int health, Fleet fleet) {
+    protected Ship(int health, WaterSquad squad) {
         this.health = health;
-        this.fleet = fleet;
+        this.squad = squad;
     }
 
     public int getHealth() {
@@ -38,42 +39,38 @@ public abstract class Ship {
         return end;
     }
 
-    public void placeInOcean(Ocean ocean) throws PlacementException {
+    public void placeInOcean(Water water) throws PlacementException {
         int attempt = 0;
         boolean placed = false;
         while (!placed) {
-            int x = rnd.nextInt(ocean.getHorizontalSize());
-            int y = rnd.nextInt(ocean.getVerticalSize());
+            int x = rnd.nextInt(water.getHorizontalSize());
+            int y = rnd.nextInt(water.getVerticalSize());
             int direction = rnd.nextInt(4); //up, right, down, left
 
             switch (direction) {
                 case 0:
-                    if (ocean.isFree(x, x, y - size + 1, y)) {
-                        ocean.placeShip(x, x, y - size + 1, y, this);
+                    if (water.placeShip(x, x, y - size + 1, y, this)) {
                         begin = new Point(x, y - size + 1);
                         end = new Point(x, y);
                         placed = true;
                     }
                     break;
                 case 1:
-                    if (ocean.isFree(x, x + size - 1, y, y)) {
-                        ocean.placeShip(x, x + size - 1, y, y, this);
+                    if (water.placeShip(x, x + size - 1, y, y, this)) {
                         begin = new Point(x, y);
                         end = new Point(x + size - 1, y);
                         placed = true;
                     }
                     break;
                 case 2:
-                    if (ocean.isFree(x, x, y + size - 1, y)) {
-                        ocean.placeShip(x, x, y + size - 1, y, this);
+                    if (water.placeShip(x, x, y + size - 1, y, this)) {
                         begin = new Point(x, y + size - 1);
                         end = new Point(x, y);
                         placed = true;
                     }
                     break;
                 case 3:
-                    if (ocean.isFree(x, x - size + 1, y, y)) {
-                        ocean.placeShip(x, x - size + 1, y, y, this);
+                    if (water.placeShip(x, x - size + 1, y, y, this)) {
                         begin = new Point(x, y);
                         end = new Point(x - size + 1, y);
                         placed = true;
@@ -91,7 +88,12 @@ public abstract class Ship {
         health = size;
     }
 
-    public abstract String sunk();
+    public String sunk(){
+        health = 0;
+        squad.decreaseShip(this.toString());
+        squad.getShips().remove(this);
+        return "You just have sunk a " + this;
+    }
 
     @Override
     public boolean equals(Object o) {

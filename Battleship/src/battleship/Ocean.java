@@ -2,12 +2,11 @@ package battleship;
 
 
 import battleship.Interfaces.Action;
+import battleship.Interfaces.Water;
 import battleship.ships.Ship;
 
-import java.util.Scanner;
 
-
-public final class Ocean {
+public final class Ocean implements Water {
     private final int verticalSize;
     private final int horizontalSize;
     private final OceanCell[][] field;
@@ -69,7 +68,7 @@ public final class Ocean {
         }
     }
 
-    public boolean isFree(int x1, int x2, int y1, int y2) {
+    private boolean isFree(int x1, int x2, int y1, int y2) {
         for (int i = Math.min(x1, x2); i <= Math.max(x1, x2); ++i) {
             for (int j = Math.min(y1, y2); j <= Math.max(y1, y2); ++j) {
                 if (i < 0 || j < 0 || i >= getHorizontalSize() || j >= getVerticalSize()
@@ -82,14 +81,18 @@ public final class Ocean {
         return true;
     }
 
-    public void placeShip(int x1, int x2, int y1, int y2, Ship ship) {
-        for (int i = Math.min(x1, x2); i <= Math.max(x1, x2); ++i) {
-            for (int j = Math.min(y1, y2); j <= Math.max(y1, y2); ++j) {
-                field[i][j].makeBlocked();
-                field[i][j].setShip(ship);
-                blockAroundCell(i, j);
+    public boolean placeShip(int x1, int x2, int y1, int y2, Ship ship) {
+        boolean isFree = isFree(x1, x2, y1, y2);
+        if (isFree) {
+            for (int i = Math.min(x1, x2); i <= Math.max(x1, x2); ++i) {
+                for (int j = Math.min(y1, y2); j <= Math.max(y1, y2); ++j) {
+                    field[i][j].makeBlocked();
+                    field[i][j].setShip(ship);
+                    blockAroundCell(i, j);
+                }
             }
         }
+        return isFree;
     }
 
     private void blockAroundCell(int x, int y) {

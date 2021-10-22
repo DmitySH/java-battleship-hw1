@@ -1,18 +1,17 @@
 package battleship;
 
 import battleship.Interfaces.Game;
+import battleship.Interfaces.Input;
 import battleship.ships.PlacementException;
 import battleship.utilities.InputHelper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
-import java.util.Random;
 
 
 public final class BattleshipGame implements Game {
-    public static final Random rnd = new Random();
-    public static final InputHelper inputHelper = InputHelper.getInstance();
+    public static final Input inputHelper = InputHelper.getInstance();
     private static final ArrayList<int[]> scores = new ArrayList<>();
     private Fleet fleet;
     private Ocean ocean;
@@ -115,7 +114,7 @@ public final class BattleshipGame implements Game {
                         "Incorrect! Try again: ", 5);
                 verticalSize = inputHelper.parseInt(1, 26, "Input vertical size of an Ocean: ",
                         "Incorrect! Try again: ", 5);
-                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 16.0));
+                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 20.0));
                 printInput(shipCells);
 
                 ocean = new Ocean(verticalSize, horizontalSize);
@@ -126,7 +125,7 @@ public final class BattleshipGame implements Game {
             } else {
                 horizontalSize = inputHelper.parseIntFromString(args[0], 1, 26);
                 verticalSize = inputHelper.parseIntFromString(args[1], 1, 26);
-                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 16.0));
+                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 20.0));
 
                 ocean = new Ocean(verticalSize, horizontalSize);
                 fleet = Fleet.fromArgsCreateFleet(shipCells, args, ocean);
@@ -155,7 +154,7 @@ public final class BattleshipGame implements Game {
         while (fleet.getShipsNumber() > 0) {
             try {
 //                int[] coordinates = new int[2];
-                System.out.println(ocean.openedOcean());
+//                System.out.println(ocean.openedOcean());
                 int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
                         0, ocean.getVerticalSize() - 1,
                         "Enter <letter> <number> (or add T before it to use torpedo): ",
@@ -173,13 +172,21 @@ public final class BattleshipGame implements Game {
                 }
 //                coordinates[0] = rnd.nextInt(ocean.getHorizontalSize());
 //                coordinates[1] = rnd.nextInt(ocean.getVerticalSize());
-                System.out.println(ocean.shot(coordinates[0], coordinates[1], torpedo, recoveryMode));
+                String shotResult = ocean.shot(coordinates[0], coordinates[1], torpedo, recoveryMode);
+                System.out.println(shotResult);
                 System.out.println(ocean);
-                ++totalShots;
+
+                boolean newCellShot = !shotResult.contains("was fired");
+                totalShots += newCellShot ? 1 : 0;
                 if (torpedo) {
-                    --torpedoes;
+                    totalShots -= newCellShot ? 1 : 0;
                     System.out.printf("%d %s\n", torpedoes, "torpedoes left");
                 }
+
+                if (totalShots % 7 == 0) {
+                    System.out.println(fleet);
+                }
+
             } catch (NumberFormatException ex) {
                 System.out.println(ex.getMessage() + " Restart game!");
                 System.exit(1);

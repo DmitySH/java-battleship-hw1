@@ -9,10 +9,7 @@ public final class Battleship extends Ship {
     }
 
     @Override
-    public String sunk() {
-        health = 0;
-        fleet.decreaseBattleships();
-        fleet.getShips().remove(this);
-        return "You just have sunk a Battleship.";
+    public String toString() {
+        return "Battleship";
     }
 }
