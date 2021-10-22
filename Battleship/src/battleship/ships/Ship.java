@@ -86,5 +86,9 @@ public abstract class Ship {
         }
     }
 
+    public void recovery(){
+        health = size;
+    }
+
     public abstract String sunk();
 }
