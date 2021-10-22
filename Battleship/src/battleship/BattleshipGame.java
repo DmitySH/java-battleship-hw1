@@ -5,12 +5,13 @@ import battleship.ships.PlacementException;
 import battleship.utilities.InputHelper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Locale;
 
 
 public final class BattleshipGame implements Game {
     public static final InputHelper inputHelper = InputHelper.getInstance();
-    private static final ArrayList<Integer> scores = new ArrayList<>();
+    private static final ArrayList<int[]> scores = new ArrayList<>();
     private Fleet fleet;
     private Ocean ocean;
     private int totalShots;
@@ -41,6 +42,7 @@ public final class BattleshipGame implements Game {
         while (!nextGame) {
             System.out.print("Your choice is ");
             choice = inputHelper.getLine().toLowerCase(Locale.ROOT);
+            System.out.println();
             switch (choice) {
                 case "play" -> {
                     playGame();
@@ -62,26 +64,42 @@ public final class BattleshipGame implements Game {
     }
 
     private void printMenu() {
-        System.out.printf("%s\n%s\n%s\n%s\n%s\n", "You can enter:",
-                "\t▷ play - start the game",
-                "\t▷ rules - see rules",
-                "\t▷ score - see scoreboard",
-                "\t▷ exit - leave the game");
+        System.out.println("""
+                You can enter:
+                \t▷ play - start the game
+                \t▷ rules - see rules
+                \t▷ score - see scoreboard
+                \t▷ exit - leave the game""");
     }
 
     private void rules() {
-        System.out.println("\nRules of this game are same as in usual battleship game\n" +
-                "First of all you should define size of gaming field (Ocean)\n" +
-                "Next step is to define how many ships of each type computer will create on this field\n" +
-                "Tip: number of cells which can take fleet depends on size of an Ocean\n" +
-                "During the game you will say cell's coordinates to fire in format <letter> <number>\n" +
-                "You can miss, hit or sink ship\n" +
-                "Your visible part of ocean will update automatically\n" +
-                "If you want to end this game enter finish instead of coordinates and you will see fleet");
+        System.out.println("""
+                Rules of this game are same as in usual battleship game
+                First of all you should define size of gaming field (Ocean)
+                Next step is to define how many ships of each type computer will create on this field
+                Tip: number of cells which can take fleet depends on size of an Ocean
+                During the game you will say cell's coordinates to fire in format <letter> <number>
+                You can miss, hit or sink ship
+                Your visible part of ocean will update automatically
+                If you want to end this game enter finish instead of coordinates and you will see fleet
+                Note: if you will enter a lot of incorrect input game will be closed.
+                Because it gonna think you are very tired and can't even enter correct things
+                """);
     }
 
     private void scoreboard() {
-        System.out.println("Scroeboard");
+        System.out.println("Best 10 scores of this game:");
+        scores.sort(Comparator.comparingInt(ints -> ints[3]));
+        for (int i = 0; i < 10; ++i) {
+            if (scores.size() <= i) {
+                System.out.println(i + 1 + ") TBD");
+            }
+            else {
+                System.out.printf("%d) %d %s %dx%d ocean with %d ships\n",
+                        i + 1, scores.get(i)[3], "shots in",
+                        scores.get(i)[0], scores.get(i)[1], scores.get(i)[2]);
+            }
+        }
     }
 
     private void initializeGame() throws PlacementException {
@@ -119,20 +137,31 @@ public final class BattleshipGame implements Game {
 
         System.out.println(fleet.getOcean());
 
+        int totalShips = fleet.getShipsNumber();
+        if (totalShips == 0){
+            System.out.println("That's not interesting...");
+            return;
+        }
         while (fleet.getShipsNumber() > 0) {
-            int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
-                    0, ocean.getVerticalSize() - 1,
-                    "Enter pair <letter> <number>: ",
-                    "Incorrect! Try again: ", 5, "finish");
+            try {
+                int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
+                        0, ocean.getVerticalSize() - 1,
+                        "Enter pair <letter> <number>: ",
+                        "Incorrect! Try again: ", 10, "finish");
 
-            if (coordinates[0] == -1) {
-                System.out.println("Your fleet was here\n");
-                System.out.println(ocean.openedOcean());
-                return;
+                if (coordinates[0] == -1) {
+                    System.out.println("Your fleet was here\n");
+                    System.out.println(ocean.openedOcean());
+                    return;
+                }
+                System.out.println(ocean.shot(coordinates[0], coordinates[1]));
+                System.out.println(ocean);
+                ++totalShots;
+            } catch (NumberFormatException ex) {
+                System.out.println(ex.getMessage() + " Restart game!");
+                System.exit(1);
             }
-            System.out.println(ocean.shot(coordinates[0], coordinates[1]));
-            System.out.println(ocean);
-            ++totalShots;
+
         }
 //        for (int i = -1; i < ocean.getVerticalSize() + 1; ++i) {
 //            for (int j = -1; j < ocean.getHorizontalSize() + 1; ++j) {
@@ -142,7 +171,7 @@ public final class BattleshipGame implements Game {
 //        }
         System.out.println("You won!\n");
 
-        scores.add(totalShots);
+        scores.add(new int[]{ocean.getHorizontalSize(), ocean.getVerticalSize(), totalShips, totalShots});
     }
 
     private void printInput(int shipCells) {
@@ -151,15 +180,17 @@ public final class BattleshipGame implements Game {
                 "You have maximum",
                 shipCells,
                 "cells for fleet:");
-        System.out.printf("%s\n%s\n%s\n%s\n%s\n%n",
-                "●\tCarrier: 5 cells",
-                "●\tBattleship: 4 cells",
-                "●\tCruiser: 3 cells",
-                "●\tDestroyer: 2 cells",
-                "●\tSubmarine: 1 cells");
-        System.out.printf("%s\n%s\n%s\n%n",
-                "You will start input number of ships for each type, ",
-                "starting with the biggest (Carrier) and finishing",
-                "with the smallest (Submarine).");
+        System.out.println("""
+                ●\tCarrier: 5 cells
+                ●\tBattleship: 4 cells
+                ●\tCruiser: 3 cells
+                ●\tDestroyer: 2 cells
+                ●\tSubmarine: 1 cells""");
+        System.out.println("""
+                
+                You will start input number of ships for each type,
+                starting with the biggest (Carrier) and finishing
+                with the smallest (Submarine)
+                """);
     }
 }
