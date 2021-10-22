@@ -41,7 +41,7 @@ public final class Fleet {
         --this.destroyers;
     }
 
-    public void decreaseCruisers(){
+    public void decreaseCruisers() {
         --this.cruisers;
     }
 
@@ -63,34 +63,53 @@ public final class Fleet {
 
     private void initializeFleet(int submarines, int destroyers,
                                  int cruisers, int battleships, int carriers) throws PlacementException {
-        int currentSize = 5;
-        while (submarines > 0 || destroyers > 0 || cruisers > 0 || battleships > 0 || carriers > 0) {
-            Ship newShip = null;
-            if (carriers > 0 && currentSize == 5) {
-                newShip = new Carrier(this);
-                --carriers;
-            } else if (battleships > 0 && currentSize == 4) {
-                newShip = new Battleship(this);
-                --battleships;
-            } else if (cruisers > 0 && currentSize == 3) {
-                newShip = new Cruiser(this);
-                --cruisers;
-            } else if (destroyers > 0 && currentSize == 2) {
-                newShip = new Destroyer(this);
-                --destroyers;
-            } else if (submarines > 0 && currentSize == 1) {
-                newShip = new Submarine(this);
-                --submarines;
-            }
+        int attempt = 0;
+        boolean created = false;
+        while (!created) {
+            int currentSize = 5;
+            try {
+                while ((submarines > 0 || destroyers > 0 || cruisers > 0 || battleships > 0 || carriers > 0)) {
+                    Ship newShip = null;
+                    if (carriers > 0 && currentSize == 5) {
+                        newShip = new Carrier(this);
+                        --carriers;
+                    } else if (battleships > 0 && currentSize == 4) {
+                        newShip = new Battleship(this);
+                        --battleships;
+                    } else if (cruisers > 0 && currentSize == 3) {
+                        newShip = new Cruiser(this);
+                        --cruisers;
+                    } else if (destroyers > 0 && currentSize == 2) {
+                        newShip = new Destroyer(this);
+                        --destroyers;
+                    } else if (submarines > 0 && currentSize == 1) {
+                        newShip = new Submarine(this);
+                        --submarines;
+                    }
 
-            if (newShip != null) {
-                newShip.placeInOcean(ocean);
-                ships.add(newShip);
-            }
+                    if (newShip != null) {
+                        newShip.placeInOcean(ocean);
+                        ships.add(newShip);
+                    }
 
-            --currentSize;
-            if (currentSize == 0) {
-                currentSize = 5;
+                    --currentSize;
+                    if (currentSize == 0) {
+                        currentSize = 5;
+                    }
+                }
+                created = true;
+            } catch (PlacementException ex) {
+                ++attempt;
+                ships.clear();
+                ocean.clear();
+                submarines = this.submarines;
+                destroyers = this.destroyers;
+                cruisers = this.cruisers;
+                battleships = this.battleships;
+                carriers = this.carriers;
+                if (attempt == 10000){
+                    throw ex;
+                }
             }
         }
     }

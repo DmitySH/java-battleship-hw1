@@ -40,7 +40,7 @@ public abstract class Ship {
     public void placeInOcean(Ocean ocean) throws PlacementException {
         int attempt = 0;
         boolean placed = false;
-        while (attempt < 1000000 && !placed) {
+        while (!placed) {
             int x = rnd.nextInt(ocean.getHorizontalSize());
             int y = rnd.nextInt(ocean.getVerticalSize());
             int direction = rnd.nextInt(4); //up, right, down, left
@@ -80,9 +80,9 @@ public abstract class Ship {
                     break;
             }
             ++attempt;
-        }
-        if (attempt == 1000000) {
-            throw new PlacementException("Too much attempts to place ship");
+            if (attempt == 1000) {
+                throw new PlacementException("Too much attempts to place ship");
+            }
         }
     }
 

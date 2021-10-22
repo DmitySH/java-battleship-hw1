@@ -13,13 +13,8 @@ public final class Ocean {
     public Ocean(int verticalSize, int horizontalSize) {
         this.verticalSize = verticalSize;
         this.horizontalSize = horizontalSize;
-
         field = new OceanCell[horizontalSize][verticalSize];
-        for (int i = 0; i < horizontalSize; ++i){
-            for (int j = 0; j < verticalSize; ++j){
-                field[i][j] = new OceanCell();
-            }
-        }
+        clear();
 
         oceanView = new OceanView(this);
         oceanView.createPlayingView();
@@ -47,6 +42,14 @@ public final class Ocean {
         openedOcean.createOpenedView();
 
         return openedOcean.toString();
+    }
+
+    public void clear() {
+        for (int i = 0; i < horizontalSize; ++i){
+            for (int j = 0; j < verticalSize; ++j){
+                field[i][j] = new OceanCell();
+            }
+        }
     }
 
     public boolean isFree(int x1, int x2, int y1, int y2) {
