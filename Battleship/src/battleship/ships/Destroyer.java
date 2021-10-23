@@ -1,13 +1,26 @@
 package battleship.ships;
 
-import battleship.Fleet;
+import battleship.Interfaces.WaterSquad;
 
+/**
+ * Destroyer.
+ */
 public final class Destroyer extends Ship {
-    public Destroyer(Fleet fleet) {
-        super(2, fleet);
+    /**
+     * Constructor with water squad.
+     *
+     * @param squad water squad.
+     */
+    public Destroyer(WaterSquad squad) {
+        super(2, squad);
         size = 2;
     }
 
+    /**
+     * To string.
+     *
+     * @return name of ship.
+     */
     @Override
     public String toString() {
         return "Destroyer";

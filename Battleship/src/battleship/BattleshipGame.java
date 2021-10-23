@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
 
-
+/**
+ * Main class of a game.
+ */
 public final class BattleshipGame implements Game {
     public static final Input inputHelper = InputHelper.getInstance();
     private static final ArrayList<int[]> scores = new ArrayList<>();
@@ -20,6 +22,11 @@ public final class BattleshipGame implements Game {
     private final String[] args;
     private boolean recoveryMode;
 
+    /**
+     * Enter point.
+     *
+     * @param args args from command line.
+     */
     public static void main(String[] args) {
         Game gameSession;
         System.out.println("Welcome to Battleship game!");
@@ -34,10 +41,21 @@ public final class BattleshipGame implements Game {
         }
     }
 
+    /**
+     * Constructor with CL args.
+     *
+     * @param args CL args.
+     */
     public BattleshipGame(String[] args) {
         this.args = args;
     }
 
+    /**
+     * Menu of the game.
+     *
+     * @return should game start or not.
+     * @throws PlacementException incorrect placement of ships.
+     */
     public boolean menu() throws PlacementException {
         String choice;
         printMenu();
@@ -66,6 +84,9 @@ public final class BattleshipGame implements Game {
         return false;
     }
 
+    /**
+     * Shows menu.
+     */
     private void printMenu() {
         System.out.println("""
                 You can enter:
@@ -75,6 +96,9 @@ public final class BattleshipGame implements Game {
                 \t▷ exit - leave the game""");
     }
 
+    /**
+     * Shows rules.
+     */
     private void rules() {
         System.out.println("""
                 Rules of this game are same as in usual battleship game
@@ -90,6 +114,9 @@ public final class BattleshipGame implements Game {
                 """);
     }
 
+    /**
+     * Shows scores.
+     */
     private void scoreboard() {
         System.out.println("Best 10 scores of this game:");
         scores.sort(Comparator.comparingInt(ints -> ints[3]));
@@ -104,32 +131,18 @@ public final class BattleshipGame implements Game {
         }
     }
 
+    /**
+     * Creates game.
+     *
+     * @throws PlacementException incorrect ship placement.
+     */
     private void initializeGame() throws PlacementException {
         try {
             totalShots = 0;
-            int horizontalSize;
-            int verticalSize;
             if (args.length != 8) {
-                horizontalSize = inputHelper.parseInt(1, 26, "Input horizontal size of an Ocean: ",
-                        "Incorrect! Try again: ", 5);
-                verticalSize = inputHelper.parseInt(1, 26, "Input vertical size of an Ocean: ",
-                        "Incorrect! Try again: ", 5);
-                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 20.0));
-                printInput(shipCells);
-
-                ocean = new Ocean(verticalSize, horizontalSize);
-                fleet = Fleet.consoleCreateFleet(shipCells, ocean);
-                torpedoes = inputHelper.parseInt(0, fleet.getShipsNumber(),
-                        "Input number of torpedoes (max = " + fleet.getShipsNumber() + "): ",
-                        "Incorrect! Try again: ", 5);
+                consoleInput();
             } else {
-                horizontalSize = inputHelper.parseIntFromString(args[0], 1, 26);
-                verticalSize = inputHelper.parseIntFromString(args[1], 1, 26);
-                int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 20.0));
-
-                ocean = new Ocean(verticalSize, horizontalSize);
-                fleet = Fleet.fromArgsCreateFleet(shipCells, args, ocean);
-                torpedoes = inputHelper.parseIntFromString(args[7], 0, fleet.getShipsNumber());
+                lineArgsInput();
             }
 
             recoveryMode = inputHelper.enterBoolean("Would you like to play in recovery mode (enter yes or no): ",
@@ -140,16 +153,56 @@ public final class BattleshipGame implements Game {
         }
     }
 
+    /**
+     * Inputs from CL.
+     *
+     * @throws PlacementException incorrect ship placement.
+     */
+    private void lineArgsInput() throws PlacementException {
+        int horizontalSize;
+        int verticalSize;
+        horizontalSize = inputHelper.parseIntFromString(args[0], 1, 26);
+        verticalSize = inputHelper.parseIntFromString(args[1], 1, 26);
+        int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 20.0));
+
+        ocean = new Ocean(verticalSize, horizontalSize);
+        fleet = Fleet.fromArgsCreateFleet(shipCells, args, ocean);
+        torpedoes = inputHelper.parseIntFromString(args[7], 0, fleet.getShipsNumber());
+    }
+
+    /**
+     * Inputs from console.
+     *
+     * @throws PlacementException incorrect ship placement.
+     */
+    private void consoleInput() throws PlacementException {
+        int horizontalSize;
+        int verticalSize;
+        horizontalSize = inputHelper.parseInt(1, 26, "Input horizontal size of an Ocean: ",
+                "Incorrect! Try again: ", 5);
+        verticalSize = inputHelper.parseInt(1, 26, "Input vertical size of an Ocean: ",
+                "Incorrect! Try again: ", 5);
+        int shipCells = (int) Math.ceil((verticalSize * horizontalSize) / (64 / 20.0));
+        printInput(shipCells);
+
+        ocean = new Ocean(verticalSize, horizontalSize);
+        fleet = Fleet.consoleCreateFleet(shipCells, ocean);
+        torpedoes = inputHelper.parseInt(0, fleet.getShipsNumber(),
+                "Input number of torpedoes (max = " + fleet.getShipsNumber() + "): ",
+                "Incorrect! Try again: ", 5);
+    }
+
+    /**
+     * Main game logic.
+     *
+     * @throws PlacementException incorrect ship placement.
+     */
     private void playGame() throws PlacementException {
         initializeGame();
-        int totalShips = fleet.getShipsNumber();
+        int totalShips = beforeStart();
         if (totalShips == 0) {
-            System.out.println("That's not interesting...");
             return;
         }
-
-        System.out.println(fleet);
-        System.out.println(ocean);
 
         while (fleet.getShipsNumber() > 0) {
             try {
@@ -172,26 +225,14 @@ public final class BattleshipGame implements Game {
                 }
 //                coordinates[0] = rnd.nextInt(ocean.getHorizontalSize());
 //                coordinates[1] = rnd.nextInt(ocean.getVerticalSize());
-                String shotResult = ocean.shot(coordinates[0], coordinates[1], torpedo, recoveryMode);
-                System.out.println(shotResult);
-                System.out.println(ocean);
-
-                boolean newCellShot = !shotResult.contains("was fired");
-                totalShots += newCellShot ? 1 : 0;
-                if (torpedo) {
-                    totalShots -= newCellShot ? 1 : 0;
-                    System.out.printf("%d %s\n", torpedoes, "torpedoes left");
-                }
-
-                if (totalShots % 7 == 0) {
-                    System.out.println(fleet);
-                }
+                afterShot(ocean.shot(coordinates[0], coordinates[1], torpedo, recoveryMode), torpedo);
 
             } catch (NumberFormatException ex) {
                 System.out.println(ex.getMessage() + " Restart game!");
                 System.exit(1);
             }
         }
+
 //        for (int i = -1; i < ocean.getVerticalSize() + 1; ++i) {
 //            for (int j = -1; j < ocean.getHorizontalSize() + 1; ++j) {
 //                System.out.println(ocean.shot(j, i, false));
@@ -212,6 +253,49 @@ public final class BattleshipGame implements Game {
         scores.add(new int[]{ocean.getHorizontalSize(), ocean.getVerticalSize(), totalShips, totalShots});
     }
 
+    /**
+     * Before game preparations.
+     *
+     * @return number of ships.
+     */
+    private int beforeStart() {
+        int totalShips = fleet.getShipsNumber();
+        if (totalShips == 0) {
+            System.out.println("That's not interesting...");
+            return 0;
+        }
+        System.out.println(fleet);
+        System.out.println(ocean);
+        return totalShips;
+    }
+
+    /**
+     * After shot checks.
+     *
+     * @param shot    shot.
+     * @param torpedo torpedo mode.
+     */
+    private void afterShot(String shot, boolean torpedo) {
+        System.out.println(shot);
+        System.out.println(ocean);
+
+        boolean newCellShot = !shot.contains("was fired");
+        totalShots += newCellShot ? 1 : 0;
+        if (torpedo) {
+            totalShots -= newCellShot ? 1 : 0;
+            System.out.printf("%d %s\n", torpedoes, "torpedoes left");
+        }
+
+        if (totalShots % 7 == 0) {
+            System.out.println(fleet);
+        }
+    }
+
+    /**
+     * Prints how to input fleet.
+     *
+     * @param shipCells max number of cells in ocean.
+     */
     private void printInput(int shipCells) {
         System.out.printf("\n%s\n%s %d %s%n",
                 "Now you should enter how many ships computer will generate.",

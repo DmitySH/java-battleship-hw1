@@ -2,6 +2,9 @@ package battleship.utilities;
 
 import java.util.Objects;
 
+/**
+ * Point record.
+ */
 public record Point(int x, int y) {
     @Override
     public boolean equals(Object o) {

@@ -9,11 +9,25 @@ import java.util.HashMap;
 
 import static battleship.BattleshipGame.inputHelper;
 
+/**
+ * Fleet with ships.
+ */
 public final class Fleet implements WaterSquad {
     private final ArrayList<Ship> ships;
     private final Water ocean;
     private final HashMap<String, Integer> numberOfShips;
 
+    /**
+     * Constructor with number of ships.
+     *
+     * @param submarines  number of submarines.
+     * @param destroyers  number of destroyers.
+     * @param cruisers    number of cruisers.
+     * @param battleships number of battleships.
+     * @param carriers    number of carriers.
+     * @param ocean       fleet's ocean.
+     * @throws PlacementException incorrect ship placement.
+     */
     public Fleet(int submarines, int destroyers, int cruisers,
                  int battleships, int carriers, Ocean ocean) throws PlacementException {
         this.ocean = ocean;
@@ -29,14 +43,29 @@ public final class Fleet implements WaterSquad {
         initializeFleet(submarines, destroyers, cruisers, battleships, carriers);
     }
 
+    /**
+     * Ships.
+     *
+     * @return list of ships.
+     */
     public ArrayList<Ship> getShips() {
         return ships;
     }
 
+    /**
+     * Decreases ship.
+     *
+     * @param shipType ship type to decrease.
+     */
     public void decreaseShip(String shipType) {
         numberOfShips.put(shipType, numberOfShips.get(shipType) - 1);
     }
 
+    /**
+     * Sum of ships.
+     *
+     * @return total number of ships.
+     */
     public int getShipsNumber() {
         return numberOfShips.get("Submarine") +
                 numberOfShips.get("Destroyer") +
@@ -45,14 +74,27 @@ public final class Fleet implements WaterSquad {
                 numberOfShips.get("Carrier");
     }
 
-    private void initializeFleet(int submarines, int destroyers,
-                                 int cruisers, int battleships, int carriers) throws PlacementException {
+    /**
+     * Creates fleet.
+     *
+     * @param submarines  number of submarines.
+     * @param destroyers  number of destroyers.
+     * @param cruisers    number of cruisers.
+     * @param battleships number of battleships.
+     * @param carriers    number of carriers.
+     * @throws PlacementException incorrect ship placement.
+     */
+    private void initializeFleet(int submarines, int destroyers, int cruisers,
+                                 int battleships, int carriers) throws PlacementException {
+        // This method is large but can't be decomposed adequately due to its logic...
+        // I've chosen this (a little strange) method to generate because it seems interesting to me.
         int attempt = 0;
         boolean created = false;
         while (!created) {
             int currentSize = 5;
             try {
-                while ((submarines > 0 || destroyers > 0 || cruisers > 0 || battleships > 0 || carriers > 0)) {
+                while ((submarines > 0 || destroyers > 0 || cruisers > 0 ||
+                        battleships > 0 || carriers > 0)) {
                     Ship newShip = null;
                     if (carriers > 0 && currentSize == 5) {
                         newShip = new Carrier(this);
@@ -72,7 +114,7 @@ public final class Fleet implements WaterSquad {
                     }
 
                     if (newShip != null) {
-                        newShip.placeInOcean(ocean);
+                        newShip.placeInWater(ocean);
                         ships.add(newShip);
                     }
 
@@ -98,6 +140,11 @@ public final class Fleet implements WaterSquad {
         }
     }
 
+    /**
+     * Fleet's string version.
+     *
+     * @return fleet as string.
+     */
     @Override
     public String toString() {
         return String.format("%s\n%s %d\n%s %d\n%s %d\n%s %d\n%s %d\n",
@@ -109,6 +156,14 @@ public final class Fleet implements WaterSquad {
                 "●\tSubmarines:", numberOfShips.get("Submarine"));
     }
 
+    /**
+     * Creates fleet from console.
+     *
+     * @param shipCells initial number of ocean cells.
+     * @param ocean     ocean.
+     * @return created fleet.
+     * @throws PlacementException incorrect ship placement.
+     */
     public static Fleet consoleCreateFleet(int shipCells, Ocean ocean) throws PlacementException {
         int carriers = inputHelper.parseInt(0, shipCells / 5,
                 String.format("Input number of Carriers (%d cells left, one = 5 cells): ", shipCells),
@@ -137,6 +192,15 @@ public final class Fleet implements WaterSquad {
         return new Fleet(submarines, destroyers, cruisers, battleships, carriers, ocean);
     }
 
+    /**
+     * Creates fleet from CL
+     *
+     * @param shipCells initial number of ocean cells.
+     * @param ocean     ocean.
+     * @param args      CL args.
+     * @return created fleet.
+     * @throws PlacementException incorrect ship placement.
+     */
     public static Fleet fromArgsCreateFleet(int shipCells, String[] args, Ocean ocean) throws PlacementException {
         int carriers = inputHelper.parseIntFromString(args[2], 0, shipCells / 5);
         shipCells -= carriers * 5;

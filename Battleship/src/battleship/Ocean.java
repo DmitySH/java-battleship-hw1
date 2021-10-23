@@ -5,7 +5,9 @@ import battleship.Interfaces.Action;
 import battleship.Interfaces.Water;
 import battleship.ships.Ship;
 
-
+/**
+ * Ocean to place ships.
+ */
 public final class Ocean implements Water {
     private final int verticalSize;
     private final int horizontalSize;
@@ -15,6 +17,12 @@ public final class Ocean implements Water {
     private final Action recoverFieldOfTheShip;
     private OceanCell lastShot;
 
+    /**
+     * Constructor with sizes.
+     *
+     * @param verticalSize   vertical size.
+     * @param horizontalSize horizontal size.
+     */
     public Ocean(int verticalSize, int horizontalSize) {
         this.verticalSize = verticalSize;
         this.horizontalSize = horizontalSize;
@@ -36,23 +44,48 @@ public final class Ocean implements Water {
         };
     }
 
+    /**
+     * Ocean's string presentation.
+     *
+     * @return ocean as a string.
+     */
     @Override
     public String toString() {
         return oceanView.toString();
     }
 
+    /**
+     * Gets vertical size.
+     *
+     * @return vertical size.
+     */
     public int getVerticalSize() {
         return verticalSize;
     }
 
+    /**
+     * Gets horizontal size.
+     *
+     * @return horizontal size.
+     */
     public int getHorizontalSize() {
         return horizontalSize;
     }
 
+    /**
+     * Gets field of ocean cells.
+     *
+     * @return field of ocean cells.
+     */
     public OceanCell[][] getField() {
         return field;
     }
 
+    /**
+     * Ocean only with opened ships.
+     *
+     * @return string of ocean with opened ships.
+     */
     public String openedOcean() {
         OceanView openedOcean = new OceanView(this);
         openedOcean.createOpenedView();
@@ -60,6 +93,9 @@ public final class Ocean implements Water {
         return openedOcean.toString();
     }
 
+    /**
+     * Clears field.
+     */
     public void clear() {
         for (int i = 0; i < horizontalSize; ++i) {
             for (int j = 0; j < verticalSize; ++j) {
@@ -68,7 +104,19 @@ public final class Ocean implements Water {
         }
     }
 
+    /**
+     * Checks ocean space for ship.
+     *
+     * @param x1 horizontal start.
+     * @param x2 horizontal end.
+     * @param y1 vertical start.
+     * @param y2 vertical end.
+     * @return if this place is free for ship.
+     */
     private boolean isFree(int x1, int x2, int y1, int y2) {
+        // Both methods are needed because otherwise if ship can't be placed
+        // it is necessary to unblock cells and delete ship from them.
+        // It is less properly.
         for (int i = Math.min(x1, x2); i <= Math.max(x1, x2); ++i) {
             for (int j = Math.min(y1, y2); j <= Math.max(y1, y2); ++j) {
                 if (i < 0 || j < 0 || i >= getHorizontalSize() || j >= getVerticalSize()
@@ -81,7 +129,20 @@ public final class Ocean implements Water {
         return true;
     }
 
+    /**
+     * Tries to place ship.
+     *
+     * @param x1   horizontal start.
+     * @param x2   horizontal end.
+     * @param y1   vertical start.
+     * @param y2   vertical end.
+     * @param ship ship to place.
+     * @return if ship was placed.
+     */
     public boolean placeShip(int x1, int x2, int y1, int y2, Ship ship) {
+        // Both methods are needed because otherwise if ship can't be placed
+        // it is necessary to unblock cells and delete ship from them.
+        // It is less properly.
         boolean isFree = isFree(x1, x2, y1, y2);
         if (isFree) {
             for (int i = Math.min(x1, x2); i <= Math.max(x1, x2); ++i) {
@@ -92,9 +153,16 @@ public final class Ocean implements Water {
                 }
             }
         }
+
         return isFree;
     }
 
+    /**
+     * Blocks territory around.
+     *
+     * @param x x coordinate.
+     * @param y y coordinate.
+     */
     private void blockAroundCell(int x, int y) {
         for (int i = 0; i < 9; ++i) {
             int currentX = x - 1 + i % 3;
@@ -106,6 +174,12 @@ public final class Ocean implements Water {
         }
     }
 
+    /**
+     * Fires territory around.
+     *
+     * @param x x coordinate.
+     * @param y y coordinate.
+     */
     private void fireAroundCell(int x, int y) {
         for (int i = 0; i < 9; ++i) {
             int currentX = x - 1 + i % 3;
@@ -120,7 +194,12 @@ public final class Ocean implements Water {
         }
     }
 
-
+    /**
+     * Goes through ship and invokes action to do.
+     *
+     * @param ship   ship to go through.
+     * @param action action to do.
+     */
     private void goThroughShip(Ship ship, Action action) {
         int x1 = ship.getBegin().x();
         int x2 = ship.getEnd().x();
@@ -134,6 +213,15 @@ public final class Ocean implements Water {
         }
     }
 
+    /**
+     * Shots on cell.
+     *
+     * @param x            x coordinate.
+     * @param y            y coordinate.
+     * @param torpedo      use torpedo.
+     * @param recoveryMode use recovery.
+     * @return result of the shot.
+     */
     public String shot(int x, int y, boolean torpedo, boolean recoveryMode) {
         if (x < 0 || x >= horizontalSize || y < 0 || y >= verticalSize) {
             return "Incorrect cell";
@@ -165,6 +253,11 @@ public final class Ocean implements Water {
         }
     }
 
+    /**
+     * Recovers ship and cells.
+     *
+     * @param currentCell current shot's cell.
+     */
     private void recoverShip(OceanCell currentCell) {
         if (lastShot != null && !currentCell.equalsShips(lastShot)
                 && lastShot.hasShip() && lastShot.getShip().getHealth() > 0) {
