@@ -73,7 +73,10 @@ public final class BattleshipGame implements Game {
                     rules();
                     printMenu();
                 }
-                case "score" -> scoreboard();
+                case "score" -> {
+                    scoreboard();
+                    printMenu();
+                }
                 case "exit" -> {
                     System.out.println("Good bye!");
                     return true;
@@ -206,25 +209,21 @@ public final class BattleshipGame implements Game {
 
         while (fleet.getShipsNumber() > 0) {
             try {
-//                int[] coordinates = new int[2];
-//                System.out.println(ocean.openedOcean());
                 int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
                         0, ocean.getVerticalSize() - 1,
                         "Enter <letter> <number> (or add T before it to use torpedo): ",
                         "Incorrect! Try again: ", 10, "finish");
-
                 if (coordinates[0] == -1) {
                     System.out.println("Your fleet was here\n");
                     System.out.println(ocean.openedOcean());
                     return;
                 }
+
                 boolean torpedo = coordinates.length == 3;
                 if (torpedo && torpedoes <= 0) {
                     System.out.println("No available torpedoes!");
                     continue;
                 }
-//                coordinates[0] = rnd.nextInt(ocean.getHorizontalSize());
-//                coordinates[1] = rnd.nextInt(ocean.getVerticalSize());
                 afterShot(ocean.shot(coordinates[0], coordinates[1], torpedo, recoveryMode), torpedo);
 
             } catch (NumberFormatException ex) {
@@ -233,22 +232,6 @@ public final class BattleshipGame implements Game {
             }
         }
 
-//        for (int i = -1; i < ocean.getVerticalSize() + 1; ++i) {
-//            for (int j = -1; j < ocean.getHorizontalSize() + 1; ++j) {
-//                System.out.println(ocean.shot(j, i, false));
-//                System.out.println(ocean);
-//            }
-//        }
-
-//        scores.add(new int[]{ocean.getHorizontalSize(), ocean.getVerticalSize(), totalShips, totalShots});
-//
-//
-//        int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
-//                        0, ocean.getVerticalSize() - 1,
-//                        "Enter <letter> <number> (or add T before it to use torpedo): ",
-//                        "Incorrect! Try again: ", 10, "finish");
-//
-//        System.out.println(ocean.shot(coordinates[0], coordinates[1], false, recoveryMode));
         System.out.printf("%s %d %s", "You won with", totalShots, "shots!\n\n");
         scores.add(new int[]{ocean.getHorizontalSize(), ocean.getVerticalSize(), totalShips, totalShots});
     }
@@ -282,7 +265,7 @@ public final class BattleshipGame implements Game {
         boolean newCellShot = !shot.contains("was fired");
         totalShots += newCellShot ? 1 : 0;
         if (torpedo) {
-            totalShots -= newCellShot ? 1 : 0;
+            torpedoes -= newCellShot ? 1 : 0;
             System.out.printf("%d %s\n", torpedoes, "torpedoes left");
         }
 
