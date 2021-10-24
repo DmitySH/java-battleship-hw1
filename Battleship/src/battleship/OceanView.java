@@ -28,9 +28,9 @@ public final class OceanView {
         beforeFieldLength = view.length();
 
         for (int i = 0; i < ocean.getVerticalSize(); ++i) {
-            view.append(String.format("%2s", i + 1)).append(" │ ");
-            view.append(" ◦".repeat(ocean.getHorizontalSize()));
-            view.append("  │");
+            view.append(String.format("%2s", i + 1)).append(" | ");
+            view.append(" o".repeat(ocean.getHorizontalSize()));
+            view.append("  |");
             view.append('\n');
         }
         lengthOfLine = (view.length() - beforeFieldLength) / ocean.getVerticalSize();
@@ -57,15 +57,15 @@ public final class OceanView {
         createUpperBound();
 
         for (int i = 0; i < ocean.getVerticalSize(); ++i) {
-            view.append(String.format("%2s", i + 1)).append(" │ ");
+            view.append(String.format("%2s", i + 1)).append(" | ");
             for (int j = 0; j < ocean.getHorizontalSize(); ++j) {
                 if (ocean.getField()[j][i].hasShip()) {
-                    view.append(" ▽");
+                    view.append(" +");
                 } else {
-                    view.append(" ◦");
+                    view.append(" o");
                 }
             }
-            view.append("  │");
+            view.append("  |");
             view.append('\n');
         }
 
@@ -82,9 +82,9 @@ public final class OceanView {
         }
 
         view.append('\n');
-        view.append("   ┌");
+        view.append("   |");
         view.append("——".repeat(ocean.getHorizontalSize()));
-        view.append("———┐");
+        view.append("———|");
         view.append('\n');
     }
 
@@ -92,9 +92,9 @@ public final class OceanView {
      * Creates last part of view.
      */
     private void createLowerBound() {
-        view.append("   └");
+        view.append("   |");
         view.append("——".repeat(ocean.getHorizontalSize()));
-        view.append("———┘");
+        view.append("———|");
         view.append('\n');
     }
 

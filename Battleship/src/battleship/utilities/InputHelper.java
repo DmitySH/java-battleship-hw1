@@ -104,11 +104,11 @@ public final class InputHelper implements Input {
      * @param prompt prompt to out.
      * @param errorMessage message to out.
      * @param attempts max number of incorrect input.
-     * @param end input to break.
+     * @param action1 input to break.
      * @return array with coordinates and may be torpedoes info.
      */
     public int[] enterCell(int from1, int to1, int from2, int to2,
-                           String prompt, String errorMessage, int attempts, String end) {
+                           String prompt, String errorMessage, int attempts, String action1, String action2) {
         out.print(prompt);
         String[] input;
         int current_attempt = 0;
@@ -121,8 +121,11 @@ public final class InputHelper implements Input {
             }
             try {
                 String rawInput = in.nextLine();
-                if (rawInput.toLowerCase(Locale.ROOT).equals(end)) {
+                if (rawInput.toLowerCase(Locale.ROOT).equals(action1)) {
                     return new int[]{-1, -1, -1};
+                }
+                if (rawInput.toLowerCase(Locale.ROOT).equals(action2)) {
+                    return new int[]{-2, -2, -2};
                 }
                 input = rawInput.split(" ");
                 res = new int[input.length];

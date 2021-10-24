@@ -15,7 +15,7 @@ public interface Input {
      * Cell parser.
      */
     int[] enterCell(int from1, int to1, int from2, int to2,
-                    String prompt, String errorMessage, int attempts, String end);
+                    String prompt, String errorMessage, int attempts, String action1, String action2);
 
     /**
      * Int parser.

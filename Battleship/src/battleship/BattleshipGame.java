@@ -93,10 +93,10 @@ public final class BattleshipGame implements Game {
     private void printMenu() {
         System.out.println("""
                 You can enter:
-                \t▷ play - start the game
-                \t▷ rules - see rules
-                \t▷ score - see scoreboard
-                \t▷ exit - leave the game""");
+                \t— play - start the game
+                \t— rules - see rules
+                \t— score - see scoreboard
+                \t— exit - leave the game""");
     }
 
     /**
@@ -112,6 +112,7 @@ public final class BattleshipGame implements Game {
                 You can miss, hit or sink ship
                 Your visible part of ocean will update automatically
                 If you want to end this game enter finish instead of coordinates and you will see fleet
+                Or you can fleet was left in the ocean: enter fleet
                 Note: if you will enter a lot of incorrect input game will be closed.
                 Because it gonna think you are very tired and can't even enter correct things
                 """);
@@ -212,11 +213,15 @@ public final class BattleshipGame implements Game {
                 int[] coordinates = inputHelper.enterCell(0, ocean.getHorizontalSize() - 1,
                         0, ocean.getVerticalSize() - 1,
                         "Enter <letter> <number> (or add T before it to use torpedo): ",
-                        "Incorrect! Try again: ", 10, "finish");
+                        "Incorrect! Try again: ", 10, "finish", "fleet");
                 if (coordinates[0] == -1) {
                     System.out.println("Your fleet was here\n");
                     System.out.println(ocean.openedOcean());
                     return;
+                }
+                if (coordinates[0] == -2) {
+                    System.out.println(fleet);
+                    continue;
                 }
 
                 boolean torpedo = coordinates.length == 3;
@@ -268,10 +273,6 @@ public final class BattleshipGame implements Game {
             torpedoes -= newCellShot ? 1 : 0;
             System.out.printf("%d %s\n", torpedoes, "torpedoes left");
         }
-
-        if (totalShots % 7 == 0) {
-            System.out.println(fleet);
-        }
     }
 
     /**
@@ -286,11 +287,11 @@ public final class BattleshipGame implements Game {
                 shipCells,
                 "cells for fleet:");
         System.out.println("""
-                ●\tCarrier: 5 cells
-                ●\tBattleship: 4 cells
-                ●\tCruiser: 3 cells
-                ●\tDestroyer: 2 cells
-                ●\tSubmarine: 1 cells""");
+                *\tCarrier: 5 cells
+                *\tBattleship: 4 cells
+                *\tCruiser: 3 cells
+                *\tDestroyer: 2 cells
+                *\tSubmarine: 1 cells""");
         System.out.println("""
                                 
                 You will start input number of ships for each type,

@@ -36,11 +36,11 @@ public final class Ocean implements Water {
         sinkTheShip = (i, j) -> {
             fireAroundCell(i, j);
             field[i][j].setFired(true);
-            oceanView.fireAtCell(i, j, '♰');
+            oceanView.fireAtCell(i, j, '*');
         };
         recoverFieldOfTheShip = (i, j) -> {
             field[i][j].setFired(false);
-            oceanView.fireAtCell(i, j, '◦');
+            oceanView.fireAtCell(i, j, 'o');
         };
     }
 
@@ -189,7 +189,7 @@ public final class Ocean implements Water {
                     && currentY >= 0 && currentY < getVerticalSize()
                     && !field[currentX][currentY].hasShip()) {
                 field[currentX][currentY].setFired(true);
-                oceanView.fireAtCell(currentX, currentY, '⊛');
+                oceanView.fireAtCell(currentX, currentY, '-');
             }
         }
     }
@@ -245,10 +245,10 @@ public final class Ocean implements Water {
                 return cell.getShip().sunk();
             }
 
-            oceanView.fireAtCell(x, y, '✗');
+            oceanView.fireAtCell(x, y, '+');
             return String.format("%s%c, %d%s\n", "You hit ship at (", x + 'a', y + 1, ")");
         } else {
-            oceanView.fireAtCell(x, y, '⊛');
+            oceanView.fireAtCell(x, y, '-');
             return String.format("%s%c, %d%s\n", "You missed at (", x + 'a', y + 1, ")");
         }
     }

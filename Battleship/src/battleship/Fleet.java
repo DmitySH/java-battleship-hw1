@@ -149,11 +149,11 @@ public final class Fleet implements WaterSquad {
     public String toString() {
         return String.format("%s\n%s %d\n%s %d\n%s %d\n%s %d\n%s %d\n",
                 "Current fleet:",
-                "●\tCarriers:", numberOfShips.get("Carrier"),
-                "●\tBattleships:", numberOfShips.get("Battleship"),
-                "●\tCruisers:", numberOfShips.get("Cruiser"),
-                "●\tDestroyers:", numberOfShips.get("Destroyer"),
-                "●\tSubmarines:", numberOfShips.get("Submarine"));
+                "*\tCarriers:", numberOfShips.get("Carrier"),
+                "*\tBattleships:", numberOfShips.get("Battleship"),
+                "*\tCruisers:", numberOfShips.get("Cruiser"),
+                "*\tDestroyers:", numberOfShips.get("Destroyer"),
+                "*\tSubmarines:", numberOfShips.get("Submarine"));
     }
 
     /**
