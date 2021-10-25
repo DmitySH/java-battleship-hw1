@@ -83,8 +83,8 @@ public final class OceanView {
 
         view.append('\n');
         view.append("   |");
-        view.append("——".repeat(ocean.getHorizontalSize()));
-        view.append("———|");
+        view.append("--".repeat(ocean.getHorizontalSize()));
+        view.append("---|");
         view.append('\n');
     }
 
@@ -93,8 +93,8 @@ public final class OceanView {
      */
     private void createLowerBound() {
         view.append("   |");
-        view.append("——".repeat(ocean.getHorizontalSize()));
-        view.append("———|");
+        view.append("--".repeat(ocean.getHorizontalSize()));
+        view.append("---|");
         view.append('\n');
     }
 

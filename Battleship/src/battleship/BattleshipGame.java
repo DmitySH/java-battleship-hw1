@@ -93,10 +93,10 @@ public final class BattleshipGame implements Game {
     private void printMenu() {
         System.out.println("""
                 You can enter:
-                \t— play - start the game
-                \t— rules - see rules
-                \t— score - see scoreboard
-                \t— exit - leave the game""");
+                \t- play - start the game
+                \t- rules - see rules
+                \t- score - see scoreboard
+                \t- exit - leave the game""");
     }
 
     /**
