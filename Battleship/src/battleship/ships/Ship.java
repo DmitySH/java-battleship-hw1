@@ -1,7 +1,7 @@
 package battleship.ships;
 
-import battleship.Interfaces.Water;
-import battleship.Interfaces.WaterSquad;
+import battleship.interfaces.Water;
+import battleship.interfaces.WaterSquad;
 import battleship.utilities.Point;
 
 import java.util.Objects;

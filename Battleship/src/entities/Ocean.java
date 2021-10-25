@@ -1,8 +1,8 @@
-package battleship;
+package entities;
 
 
-import battleship.Interfaces.Action;
-import battleship.Interfaces.Water;
+import battleship.interfaces.Action;
+import battleship.interfaces.Water;
 import battleship.ships.Ship;
 
 /**

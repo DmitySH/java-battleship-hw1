@@ -1,4 +1,4 @@
-package battleship;
+package entities;
 
 import battleship.ships.Ship;
 

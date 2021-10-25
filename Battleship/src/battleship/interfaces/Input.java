@@ -1,4 +1,4 @@
-package battleship.Interfaces;
+package battleship.interfaces;
 
 public interface Input {
     /**

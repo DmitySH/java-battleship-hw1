@@ -1,6 +1,6 @@
 package battleship.utilities;
 
-import battleship.Interfaces.Input;
+import battleship.interfaces.Input;
 
 import java.io.InputStream;
 import java.io.PrintStream;

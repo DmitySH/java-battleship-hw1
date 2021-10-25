@@ -1,6 +1,6 @@
 package battleship.ships;
 
-import battleship.Interfaces.WaterSquad;
+import battleship.interfaces.WaterSquad;
 
 /**
  * Cruiser.

@@ -1,4 +1,4 @@
-package battleship;
+package entities;
 
 /**
  * View of ocean model.

@@ -1,7 +1,7 @@
-package battleship;
+package entities;
 
-import battleship.Interfaces.Water;
-import battleship.Interfaces.WaterSquad;
+import battleship.interfaces.Water;
+import battleship.interfaces.WaterSquad;
 import battleship.ships.*;
 
 import java.util.ArrayList;

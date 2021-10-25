@@ -1,9 +1,11 @@
 package battleship;
 
-import battleship.Interfaces.Game;
-import battleship.Interfaces.Input;
+import battleship.interfaces.Game;
+import battleship.interfaces.Input;
 import battleship.ships.PlacementException;
 import battleship.utilities.InputHelper;
+import entities.Fleet;
+import entities.Ocean;
 
 import java.util.ArrayList;
 import java.util.Comparator;
